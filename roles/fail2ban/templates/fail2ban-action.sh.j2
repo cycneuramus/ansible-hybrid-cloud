@@ -1,0 +1,10 @@
+#!/bin/bash
+
+. "{{ lookup('env', 'HOME') + '/bin/secrets' }}"
+. "{{ lookup('env', 'HOME') + '/bin/functions.sh' }}"
+
+ip="$1"
+jail="$2"
+ip_country="$(mmdblookup -f {{ geoip_db }} -i "$ip" country names en | awk -F'"' '$0=$2')"
+
+push "fail2ban banned $ip ($ip_country) on $jail"

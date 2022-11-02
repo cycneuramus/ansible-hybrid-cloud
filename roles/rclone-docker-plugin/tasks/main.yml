@@ -1,0 +1,22 @@
+- name: Install dependencies
+  become: true
+  apt:
+    name: fuse
+    state: present
+
+- name: Ensure rclone plugin directories
+  become: true
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0644
+  with_items:
+    - /var/lib/docker-plugins/rclone/config
+    - /var/lib/docker-plugins/rclone/cache
+
+- name: Install rclone docker volume plugin
+  become: true
+  community.docker.docker_plugin:
+    plugin_name: rclone/docker-volume-rclone:{{ arch }}
+    alias: rclone
+    state: enable

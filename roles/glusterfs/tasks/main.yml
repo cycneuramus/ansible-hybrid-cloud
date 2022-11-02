@@ -1,0 +1,58 @@
+- name: Install glusterfs
+  include_role:
+    name: geerlingguy.glusterfs
+  vars:
+    glusterfs_ppa_version: "9"
+
+- name: Set cluster ip adresses
+  set_fact:
+    cluster: |
+      {% for host in ansible_play_batch -%}
+      {{ hostvars[host]['wireguard_ip'] }}{% if not loop.last %},{% endif %}
+      {%- endfor %}
+  run_once: true
+
+- name: Ensure gluster brick and mount directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0775
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+  loop:
+    - "{{ gluster_brick_dir }}"
+    - "{{ gluster_mount_dir }}"
+
+- name: Configure gluster volume
+  gluster_volume:
+    state: present
+    name: "{{ gluster_brick_name }}"
+    brick: "{{ gluster_brick_dir }}"
+    replicas: 3
+    cluster: "{{ cluster | trim }}"
+    host: "{{ wireguard_ip }}"
+    force: true
+    options:
+      { group: "metadata-cache",
+        features.cache-invalidation: "on",
+        performance.cache-invalidation: "on",
+        cache-invalidation-timeout: "600",
+        performance.cache-max-file-size: "10MB",
+        performance.cache-size: "256MB",
+        performance.qr-cache-timeout: "600",
+        performance.stat-prefetch: "on",
+        performance.io-thread-count: "64",
+        client.event-threads: "4",
+        server.event-threads: "4",
+        server.outstanding-rpc-limit: "128",
+        cluster.lookup-optimize: "on",
+      }
+  run_once: true
+
+- name: Ensure gluster volume is mounted
+  mount:
+    name: "{{ gluster_mount_dir }}"
+    src: "localhost:/{{ gluster_brick_name }}"
+    fstype: glusterfs
+    opts: "defaults,_netdev"
+    state: mounted

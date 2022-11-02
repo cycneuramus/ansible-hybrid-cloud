@@ -1,0 +1,16 @@
+orchestrator: swarm
+protection: crowdsec
+storage: syncthing
+vagrant: "false"
+
+ansible_port: 22
+ansible_user: "{{ vault_user }}"
+host_amd_1: "{{ vault_host_amd_1 }}"
+host_amd_2: "{{ vault_host_amd_2 }}"
+host_arm_1: "{{ vault_host_arm_1 }}"
+host_arm_2: "{{ vault_host_arm_2 }}"
+host_home: "{{ vault_host_home }}"
+host_vps: "{{ vault_host_vps }}"
+wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
+wireguard_endpoint_vps: "{{ vault_wireguard_endpoint_vps }}"
+wireguard_port: 51820

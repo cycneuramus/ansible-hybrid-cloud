@@ -1,0 +1,62 @@
+name = "{{ inventory_hostname }}"
+region = "global"
+datacenter = "dc1"
+
+advertise {
+	http = "0.0.0.0"
+	rpc = "{{ wireguard_ip }}"
+	serf = "{{ wireguard_ip }}"
+}
+
+data_dir = "{{ nomad_data_dir }}"
+plugin_dir = "{{ nomad_data_dir }}/plugins"
+log_level = "warn"
+log_file = "{{ nomad_data_dir }}/logs/nomad.log"
+log_rotate_max_files = 5
+enable_syslog = false
+
+client {
+	enabled = true
+	network_interface = "wg-mesh"
+	host_network "wg-mesh" {
+		cidr = "10.10.10.0/24"
+		interface = "wg-mesh"	
+	}
+
+	meta {
+	{% for k,v in hostvars[inventory_hostname].cluster_labels.items() %}
+		{{ k }} = "{{ v }}"
+	{% endfor %}
+	}
+{% set server_ip = [] %}
+{% for host in ansible_play_batch %}
+{% if host in groups['cluster_managers'] %}
+{{ server_ip.append(hostvars[host].wireguard_ip) }}
+{% endif %}
+{% endfor %}
+	servers = [ {{ '\"' + server_ip | join('\", \"') + '\"' }} ]
+}
+
+{% if inventory_hostname in groups['cluster_managers'] %}
+server {
+	enabled = true
+{% if vagrant %}
+	bootstrap_expect = 1
+{% else %}
+	bootstrap_expect = 3
+{% endif %}
+}
+{% endif %}
+
+{% if inventory_hostname in groups['cluster_managers'] and inventory_hostname in groups['cluster_workers'] %}
+client {
+	enabled = true
+}
+{% endif %}
+plugin "docker" {
+	config {
+		volumes {
+			enabled = true
+		}
+	}
+}

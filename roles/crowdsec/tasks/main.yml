@@ -1,0 +1,11 @@
+- name: Use iptables-nft alternative
+  alternatives:
+    name: "{{ item }}"
+    path: "/usr/sbin/{{ item }}-nft"
+  loop:
+    - iptables
+    - ip6tables
+
+- name: Install and configure crowdsec
+  include_role:
+    name: alf149.crowdsec

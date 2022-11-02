@@ -1,0 +1,35 @@
+enable_crowdsec: true
+crowdsec_install_firewall_bouncer: true
+cs_parsers_mywhitelists_cidr: "{{ vault_cidr_whitelist.split(' ') }}"
+cs_parsers_mywhitelists_ip: "{{ vault_ip_whitelist.split(' ') }}"
+cs_prometheus_endpoint: "enabled: true"
+
+cs_collections_list:
+  - crowdsecurity/caddy
+  - crowdsecurity/dovecot
+  - crowdsecurity/iptables
+  - crowdsecurity/linux
+  - crowdsecurity/postfix
+  - crowdsecurity/sshd
+cs_parsers_list:
+  - crowdsecurity/docker-logs
+  - crowdsecurity/whitelists
+cs_ban_duration: "duration: 672h"
+cs_acquis_addon: |
+  ---
+  source: journalctl
+  journalctl_filter:
+    - "_SYSTEMD_UNIT=ssh.service"
+  labels:
+    type: journald"
+  ---
+  filenames:
+    - {{ lookup('env', 'HOME') + '/log/access.log' }}
+  labels:
+    type: caddy
+  ---
+  filenames:
+    - {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+  labels:
+    type: syslog
+  ---

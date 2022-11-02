@@ -1,0 +1,93 @@
+- name: Provision servers
+  hosts: all
+  roles:
+    - role: user-create
+      become: true
+      when: ansible_user != new_user
+      tags: user
+
+    - role: user-supersede
+      ansible_user: root
+      tags: user
+
+    - role: hostname
+      become: true
+      tags: hostname
+
+    - role: ssh
+      become: true
+      tags:
+        - ssh
+        - security
+
+    - role: unattended-upgrades
+      become: true
+      tags:
+        - unattended-upgrades
+        - security
+
+    - role: apt
+      become: true
+      tags: apt
+
+    - role: docker
+      become: true
+      tags: docker
+
+    - role: rclone-docker-plugin
+      when: cluster_labels["performance"] == "high"
+      tags: rclone-docker-plugin
+
+    - role: home-dirs
+      tags: home-dirs
+
+    - role: dotfiles
+      tags: dotfiles
+
+    - role: firewall
+      become: true
+      when: inventory_hostname != "home"
+      tags:
+        - firewall
+        - security
+
+    - role: fail2ban
+      become: true
+      when:
+        - protection == "fail2ban"
+        - cluster_labels["ingress"] == "true"
+      tags:
+        - fail2ban
+        - security
+
+    - role: crowdsec
+      become: true
+      when:
+        - protection == "crowdsec"
+        - cluster_labels["ingress"] == "true"
+      tags:
+        - crowdsec
+        - security
+
+    - role: wireguard
+      become: true
+      tags: wireguard
+
+    - role: syncthing
+      become: true
+      when: storage == "syncthing"
+      tags: syncthing
+
+    - role: glusterfs
+      become: true
+      when: storage == "glusterfs"
+      tags: glusterfs
+
+    - role: swarm
+      when: orchestrator == "swarm"
+      tags: swarm
+
+    - role: nomad
+      become: true
+      when: orchestrator == "nomad"
+      tags: nomad

@@ -1,0 +1,3 @@
+new_user: "{{ vault_new_user }}"
+new_user_uid: "{{ vault_new_user_uid }}"
+new_user_pass: "{{ vault_new_user_pass }}"

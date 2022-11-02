@@ -1,0 +1,77 @@
+all:
+  children:
+
+    eso:
+      hosts:
+        home: 
+          arch: amd64
+          ansible_host: "{{ host_home }}"
+          git_branch: homeserver
+          wireguard_ip: 10.10.10.10
+          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
+          cluster_labels: 
+            performance: high
+            datacenter: eso
+            ingress: "false"
+
+        vps:
+          arch: amd64
+          ansible_host: "{{ host_vps }}"
+          ansible_port: 4422
+          wireguard_ip: 10.10.10.11
+          wireguard_endpoint: "{{ wireguard_endpoint_vps }}"
+          cluster_labels: 
+            performance: high
+            datacenter: eso
+            ingress: "true"
+
+    exo:
+      hosts:
+        arm_1:
+          arch: arm64
+          ansible_host: "{{ host_arm_1 }}"
+          wireguard_ip: 10.10.10.12
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels: 
+            performance: high
+            datacenter: exo
+            ingress: "false"
+        arm_2:
+          arch: arm64
+          ansible_host: "{{ host_arm_2 }}"
+          wireguard_ip: 10.10.10.13
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels: 
+            performance: high
+            datacenter: exo
+            ingress: "false"
+        amd_1:
+          arch: amd64
+          ansible_host: "{{ host_amd_1 }}"
+          wireguard_ip: 10.10.10.14
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels: 
+            performance: low
+            datacenter: exo
+            ingress: "true"
+        amd_2:
+          arch: amd64
+          ansible_host: "{{ host_amd_2 }}"
+          wireguard_ip: 10.10.10.15
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels: 
+            performance: low
+            datacenter: exo
+            ingress: "true"
+
+    cluster_managers:
+      hosts:
+        home:
+        vps:
+        arm_1:
+
+    cluster_workers:
+      hosts:
+        amd_1:
+        amd_2:
+        arm_2:

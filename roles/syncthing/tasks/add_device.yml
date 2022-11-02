@@ -1,0 +1,28 @@
+- name: Add device
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration
+    pretty_print: true
+    add_children:
+      - device:
+          id: "{{ hostvars[device_item].device_id.stdout }}"
+          name: "{{ hostvars[device_item].inventory_hostname }}"
+
+- name: Configure device
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: "/configuration/device[@name='{{ hostvars[device_item].inventory_hostname }}']"
+    pretty_print: true
+    add_children:
+      - address: "tcp://{{ hostvars[device_item].wireguard_ip }}"
+      - paused: "false"
+      - allowedNetwork: "10.10.10.0/24"
+
+- name: Add device ids for sync folder
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/folder[@label="Cloud"]
+    pretty_print: true
+    add_children:
+      - device:
+          id: "{{ hostvars[device_item].device_id.stdout }}"

@@ -1,0 +1,2 @@
+swarm_interface: wg-mesh
+overlay_network: public

@@ -1,0 +1,6 @@
+local_dotfiles_repo: .local/repo/dots
+temp_repo: dots-tmp
+git_email: "{{ vault_git_email }}"
+git_username: "{{ vault_git_username }}"
+remote_dotfiles_repo: "{{ vault_remote_dotfiles_repo }}"
+transcrypt_pass: "{{ vault_transcrypt_pass }}"

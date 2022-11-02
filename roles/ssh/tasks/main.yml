@@ -1,0 +1,25 @@
+- name: Ensure ssh daemon
+  service:
+    name: ssh
+    state: started
+
+- name: Harden ssh config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: 'sshd -T -f %s'
+    mode: 0644
+  loop:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^Port"
+      line: "Port {{ ansible_port | default('22') }}"
+
+- name: Restart ssh daemon
+  service:
+    name: ssh
+    state: restarted

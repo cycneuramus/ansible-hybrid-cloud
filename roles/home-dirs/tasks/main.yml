@@ -1,0 +1,8 @@
+- name: Create home directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    mode: 0644
+  with_items:
+    - log
+    - mnt

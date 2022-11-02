@@ -1,0 +1,38 @@
+[DEFAULT]
+maxretry = 5
+findtime = 30m
+bantime = 365d
+chain = INPUT
+ignorecache = key="<ip>", max-count=100, max-time=5m
+ignorecommand = country=$(mmdblookup -f {{ geoip_db }} -i "<ip>" country iso_code | awk -F'"' '$0=$2'); if [ "$country" = "SE" ]; then exit 0; fi; exit 1
+ignoreip = {{ ip_whitelist }} {{ cidr_whitelist }}
+action = ufw
+			gotify
+
+[caddy]
+enabled = true
+port = http,https
+filter = caddy
+logpath = {{ lookup('env', 'HOME') + '/log/access.log' }}
+
+[sshd]
+enabled = true
+backend = systemd
+port = {{ ansible_port }}
+filter = sshd[mode=aggressive]
+action = ufw
+
+[dovecot]
+enabled = true
+port = pop3,pop3s,imap,imaps,submission,465,sieve
+logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+
+[postfix]
+enabled = true
+port = smtp,465,submission
+logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+
+[postfix-sasl]
+enabled = true
+port = smtp,465,submission
+logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
