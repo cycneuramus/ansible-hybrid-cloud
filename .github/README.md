@@ -11,7 +11,7 @@ This Ansible role deploys a container cluster on a group of servers distributed 
 | ARM Ampere #1  | Manager / Worker           |
 | ARM Ampere #2  | Worker                     |
 
-...where the Compute and Ampere nodes exist on the [OCL Free Tier](https://www.oracle.com/cloud/free/#always-free).
+...where the Compute and Ampere nodes exist on the [OCI Free Tier](https://www.oracle.com/cloud/free/#always-free).
 
 ### Features
 
