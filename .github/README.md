@@ -1,6 +1,6 @@
 ## Overview
 
-This Ansible role deploys a container cluster on a group of servers distributed over several data centers. In this particular setup, the assumption on infrastructure is:
+This Ansible playbook deploys a container cluster on a group of servers distributed over several data centers. In this particular setup, the assumption on infrastructure is:
 
 | **NODE**       | **CLUSTER ROLE**           |
 |----------------|----------------------------|
@@ -36,4 +36,4 @@ This Ansible role deploys a container cluster on a group of servers distributed 
 
 ## CAUTION
 
-This is a personalized setup, not a cookie-cutter role, so any use outside of the intended environment requires the appropriate adjustments.
+This is a personalized setup, not a cookie-cutter playbook, so any use outside of the intended environment requires the appropriate adjustments to roles and variables.
