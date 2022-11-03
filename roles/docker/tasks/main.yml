@@ -1,4 +1,4 @@
-- name: Install docker
+- name: Install dependencies
   apt:
     update_cache: true
     name:

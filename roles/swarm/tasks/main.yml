@@ -6,13 +6,13 @@
       - python3-pexpect
     state: present
 
-- name: Drain swarm nodes
-  docker_node:
-    hostname: "{{ hostvars[item]['ansible_hostname'] }}"
-    availability: drain
-  loop: "{{ ansible_play_batch }}"
-  when: inventory_hostname in groups['cluster_managers']
-  run_once: true
+# - name: Drain swarm nodes
+#   docker_node:
+#     hostname: "{{ hostvars[item]['ansible_hostname'] }}"
+#     availability: drain
+#   loop: "{{ ansible_play_batch }}"
+#   when: inventory_hostname in groups['cluster_managers']
+#   run_once: true
 
 - name: Remove swarm managers
   docker_swarm:
