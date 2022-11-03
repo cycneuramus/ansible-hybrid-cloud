@@ -5,7 +5,10 @@ whitelist:
   ip:
     - "127.0.0.1"
     - "::1"
-    {{ ip_whitelist }}
+{% for ip in ip_whitelist %}
+    - "{{ ip }}"
+{% endfor %}
   cidr: 
-    {{ cidr_whitelist }}
-    
+{% for cidr in cidr_whitelist %}
+    - "{{ cidr }}"
+{% endfor %}
