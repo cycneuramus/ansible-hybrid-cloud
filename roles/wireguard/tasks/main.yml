@@ -13,7 +13,7 @@
 
 - name: Generate wireguard keypair
   shell: |
-    set -eo pipefail
+    set -o pipefail
     wg genkey | tee /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
   args:
     creates: /etc/wireguard/privatekey

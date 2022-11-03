@@ -1,0 +1,11 @@
+name: mywhitelists
+description: "Whitelist events from approved IP addresses"
+whitelist:
+  reason: "Trusted IP addresses and ranges"
+  ip:
+    - "127.0.0.1"
+    - "::1"
+    {{ ip_whitelist }}
+  cidr: 
+    {{ cidr_whitelist }}
+    

@@ -7,18 +7,30 @@ vhome = ENV["VAGRANT_HOME"]
 Vagrant.configure("2") do |config|
 
   config.vm.define "vm1" do |vm1|
+    vm1.vm.provider :libvirt do |domain|
+      domain.machine_arch = "x86_64"
+    end
+
     vm1.vm.box = "generic/ubuntu1804"
     vm1.vm.hostname = "vm1"
     vm1.vm.network "private_network", ip: "192.168.100.100"
   end
 
   config.vm.define "vm2" do |vm2|
+    vm2.vm.provider :libvirt do |domain|
+      domain.machine_arch = "x86_64"
+    end
+
     vm2.vm.box = "generic/ubuntu1804"
     vm2.vm.hostname = "vm2"
     vm2.vm.network "private_network", ip: "192.168.100.101"
   end
 
   config.vm.define "vm3" do |vm3|
+    vm3.vm.provider :libvirt do |domain|
+      domain.machine_arch = "x86_64"
+    end
+
     vm3.vm.box = "debian/bullseye64"
     vm3.vm.hostname = "vm3"
     vm3.vm.network "private_network", ip: "192.168.100.102"

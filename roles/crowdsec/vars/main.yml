@@ -1,21 +1,17 @@
-enable_crowdsec: true
-crowdsec_install_firewall_bouncer: true
-cs_parsers_mywhitelists_cidr: "{{ vault_cidr_whitelist.split(' ') }}"
-cs_parsers_mywhitelists_ip: "{{ vault_ip_whitelist.split(' ') }}"
-cs_prometheus_endpoint: "enabled: true"
-
-cs_collections_list:
+cidr_whitelist: "{{ vault_cidr_whitelist.split(' ') }}"
+ip_whitelist: "{{ vault_ip_whitelist.split(' ') }}"
+collections:
   - crowdsecurity/caddy
   - crowdsecurity/dovecot
   - crowdsecurity/iptables
   - crowdsecurity/linux
   - crowdsecurity/postfix
   - crowdsecurity/sshd
-cs_parsers_list:
+parsers:
   - crowdsecurity/docker-logs
   - crowdsecurity/whitelists
-cs_ban_duration: "duration: 672h"
-cs_acquis_addon: |
+ban_duration: "duration: 672h"
+acquis_addons: |
   ---
   source: journalctl
   journalctl_filter:
