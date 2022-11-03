@@ -18,7 +18,7 @@ This Ansible playbook deploys a container cluster on a group of servers distribu
 + **Orchestration**: Services are managed by [Docker Swarm mode](https://docs.docker.com/engine/swarm/) (default) or [Nomad](https://docs.docker.com/engine/swarm/) (prototype)
 + **Encryption**: Cluster nodes communicate exclusively over a private [Wireguard](https://www.wireguard.com/) mesh network
 + **Security**: [CrowdSec](https://www.crowdsec.net/) (default) or [Fail2ban](https://www.fail2ban.org/); reasonably hardened `ssh` config; unattended upgrades
-+ **Need-to-know**: Service ports (`https`, `imap`, `DoT`, etc.) are open on ingress nodes only; all requests gets reverse-proxied to containerized services on the common overlay network
++ **Need-to-know**: Service ports (`https`, `imap`, `DoT`, etc.) are open on ingress nodes only; all requests get reverse-proxied to containerized services on the common overlay network
 + **Cloud storage**: [Rclone](https://rclone.org/) as a [Docker volume plugin](https://rclone.org/docker/) for mounting any cloud storage as a storage backend for services
 + **Distributed storage**: [GlusterFS](https://www.gluster.org/) or [Syncthing](https://syncthing.net/) (default)
 
