@@ -1,13 +1,13 @@
 cidr_whitelist: "{{ vault_cidr_whitelist.split(' ') }}"
 ip_whitelist: "{{ vault_ip_whitelist.split(' ') }}"
-collections:
+collections_list:
   - crowdsecurity/caddy
   - crowdsecurity/dovecot
   - crowdsecurity/iptables
   - crowdsecurity/linux
   - crowdsecurity/postfix
   - crowdsecurity/sshd
-parsers:
+parsers_list:
   - crowdsecurity/docker-logs
   - crowdsecurity/whitelists
 ban_duration: "duration: 672h"

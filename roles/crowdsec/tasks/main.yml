@@ -59,18 +59,18 @@
 - name: Install collections
   command:
     cmd: "sudo cscli collections install {{ item }}"
-  with_items: "{{ collections }}"
+  with_items: "{{ collections_list }}"
   register: collections_install_result
   changed_when: "'overwrite' not in collections_install_result.stderr"
-  when: collections | length > 0
+  when: collections_list | length > 0
 
 - name: Install parsers
   command:
     cmd: "sudo cscli parsers install {{ item }}"
-  with_items: "{{ parsers }}"
+  with_items: "{{ parsers_list }}"
   register: parsers_install_result
   changed_when: "'overwrite' not in parsers_install_result.stderr"
-  when: parsers | length > 0
+  when: parsers_list | length > 0
 
 - name: Enable Prometheus endpoint
   replace:
