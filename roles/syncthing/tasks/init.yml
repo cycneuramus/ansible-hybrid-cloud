@@ -51,7 +51,7 @@
     path: "{{ sync_dir }}"
     state: directory
 
-- name: Remove existing sync folder entries.
+- name: Remove existing sync folder entries in config
   xml:
     path: "{{ syncthing_cfg_file }}"
     xpath: /configuration/folder

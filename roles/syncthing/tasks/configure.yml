@@ -8,9 +8,9 @@
           path: "{{ sync_dir }}"
           id: default
           label: Cloud
-          rescanIntervalS: "600"
+          rescanIntervalS: "3600"
           fsWatcherEnabled: "true"
-          fsWatcherDelayS: "30"
+          fsWatcherDelayS: "15"
           ignorePerms: "false"
           autoNormalize: "true"
 
@@ -24,22 +24,31 @@
       # - syncXattrs: "true"
       - copyOwnershipFromParent: "true"
 
-# - name: Disable gui
-#   xml:
-#     path: "{{ syncthing_cfg_file }}"
-#     xpath: /configuration/gui
-#     attribute: enabled
-#     value: "false"
+- name: Set GUI on home node
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/gui/address
+    value: "0.0.0.0:8384"
+  when: inventory_hostname == "home"
       
+- name: Disable GUI everywhere else
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/gui
+    attribute: enabled
+    value: "false"
+  when: inventory_hostname != "home"
+
 - name: Configure general options
   xml:
     path: "{{ syncthing_cfg_file }}"
     xpath: "/configuration/options/{{ item }}"
     value: "false"
   loop:
+      - crashReportingEnabled
+      - globalAnnounceEnabled
       - relaysEnabled
       - startBrowser
-      - crashReportingEnabled
     
 - name: Collect device ids
   command: /usr/bin/syncthing -device-id
