@@ -26,6 +26,10 @@
         - unattended-upgrades
         - security
 
+    - role: motd
+      become: true
+      tags: motd
+
     - role: apt
       become: true
       tags: apt
