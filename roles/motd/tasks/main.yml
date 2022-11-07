@@ -1,0 +1,29 @@
+- name: Install dependencies
+  apt:
+    name: python3-psutil
+    state: present
+    update_cache: true
+
+- name: Remove existing motd
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - /etc/motd
+    - /etc/update-motd.d
+
+- name: Ensure motd directory
+  file:
+    path: /etc/update-motd.d
+    state: directory
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Deploy motd
+  copy:
+    src: 20-sysinfo
+    dest: /etc/update-motd.d/20-sysinfo
+    owner: root
+    group: root
+    mode: 0755
