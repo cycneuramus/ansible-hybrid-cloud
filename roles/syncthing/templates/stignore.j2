@@ -1,0 +1,10 @@
+{% if cluster_labels["performance"] == "low" %}
+*
+!/caddy/**
+!/caddy-l4/**
+!/mailserver/**
+!/uptime-kuma/**
+{% else %}
+**transcodes**
+**Transcode**
+{% endif %}

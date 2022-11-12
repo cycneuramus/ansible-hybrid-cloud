@@ -12,7 +12,14 @@
           fsWatcherEnabled: "true"
           fsWatcherDelayS: "15"
           ignorePerms: "false"
-          autoNormalize: "true"
+
+- name: Configure whitelist
+  template:
+    src: stignore.j2
+    dest: "{{ sync_dir }}/.stignore"
+    owner: root
+    group: root
+    mode: 0600
 
 - name: Configure sync folder
   xml:
@@ -54,7 +61,7 @@
   command: /usr/bin/syncthing -device-id
   register: device_id
 
-- name: Remove existing device entries.
+- name: Remove existing device entries
   xml:
     path: "{{ syncthing_cfg_file }}"
     xpath: /configuration/device
