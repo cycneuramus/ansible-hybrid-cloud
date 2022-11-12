@@ -12,6 +12,7 @@
           fsWatcherEnabled: "true"
           fsWatcherDelayS: "15"
           ignorePerms: "false"
+          autoNormalize: "true"
 
 - name: Configure whitelist
   template:
