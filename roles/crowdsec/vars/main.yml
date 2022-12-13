@@ -1,7 +1,7 @@
 cidr_whitelist: "{{ vault_cidr_whitelist.split(' ') }}"
 ip_whitelist: "{{ vault_ip_whitelist.split(' ') }}"
 collections_list:
-  # - crowdsecurity/caddy
+  - crowdsecurity/caddy
   - crowdsecurity/dovecot
   - crowdsecurity/iptables
   - crowdsecurity/linux
