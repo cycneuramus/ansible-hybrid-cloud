@@ -6,13 +6,21 @@
       - python3-pexpect
     state: present
 
-# - name: Drain swarm nodes
-#   docker_node:
-#     hostname: "{{ hostvars[item]['ansible_hostname'] }}"
-#     availability: drain
-#   loop: "{{ ansible_play_batch }}"
-#   when: inventory_hostname in groups['cluster_managers']
-#   run_once: true
+- name: Drain swarm nodes
+  docker_node:
+    hostname: "{{ hostvars[item]['ansible_hostname'] }}"
+    availability: drain
+  loop: "{{ ansible_play_batch }}"
+  when: inventory_hostname in groups['cluster_managers']
+
+- name: Disable rclone docker volume plugin
+  become: true
+  community.docker.docker_plugin:
+    plugin_name: rclone/docker-volume-rclone:{{ arch }}
+    alias: rclone
+    state: disable
+  when: cluster_labels["performance"] == "high"
+  ignore_errors: true
 
 - name: Remove swarm managers
   docker_swarm:
@@ -28,8 +36,7 @@
     state: present
     advertise_addr: "{{ swarm_interface }}"
   register: swarm_info
-  when: inventory_hostname in groups['cluster_managers']
-  run_once: true
+  when: inventory_hostname == groups['cluster_managers'][0]
 
 - name: Set swarm interop facts
   set_fact:
@@ -58,10 +65,10 @@
     hostname: "{{ hostvars[item]['ansible_hostname'] }}"
     labels: "{{ hostvars[item]['cluster_labels'] | default({}) }}"
   loop: "{{ ansible_play_batch }}"
-  when: inventory_hostname in groups['cluster_managers']
-  run_once: true
+  when: inventory_hostname == groups['cluster_managers'][0]
 
 - name: Ensure compatibility with Wireguard MTU
+  when: inventory_hostname == groups['cluster_managers'][0]
   block:
     - name: Remove default ingress network
       expect:
@@ -76,7 +83,6 @@
         --opt com.docker.network.driver.mtu=1420
         ingress
       changed_when: true
-      run_once: true
 
 - name: Create overlay network for reverse proxy
   docker_network:
@@ -86,3 +92,11 @@
     driver_options:
       com.docker.network.driver.mtu: 1420
   when: inventory_hostname == groups['cluster_managers'][0]
+
+- name: Enable rclone docker volume plugin
+  become: true
+  community.docker.docker_plugin:
+    plugin_name: rclone/docker-volume-rclone:{{ arch }}
+    alias: rclone
+    state: enable
+  when: cluster_labels["performance"] == "high"

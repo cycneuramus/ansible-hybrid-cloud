@@ -1,14 +1,20 @@
+# Initial provisioning with ssh password:
+# ansible-playbook main.yml --tags="user" -e "ansible_user=root" --ask-pass
+
 - name: Provision servers
   hosts: all
   roles:
     - role: user-create
-      become: true
       when: ansible_user != new_user
       tags: user
 
     - role: user-supersede
-      ansible_user: root
+      when: ansible_user != new_user
       tags: user
+
+    - role: debloat
+      become: true
+      tags: debloat
 
     - role: hostname
       become: true
@@ -50,7 +56,8 @@
 
     - role: firewall
       become: true
-      when: inventory_hostname != "home"
+      when:
+        - cluster_labels["datacenter"] != "eso"
       tags:
         - firewall
         - security
@@ -79,7 +86,9 @@
 
     - role: syncthing
       become: true
-      when: storage == "syncthing"
+      when:
+        - storage == "syncthing"
+        - inventory_hostname != "raspi"
       tags: syncthing
 
     - role: glusterfs

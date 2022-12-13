@@ -22,6 +22,9 @@ client {
 		cidr = "10.10.10.0/24"
 		interface = "wg-mesh"	
 	}
+	host_network "host" {
+		interface = "eth0"	
+	}
 
 	meta {
 	{% for k,v in hostvars[inventory_hostname].cluster_labels.items() %}
@@ -48,7 +51,7 @@ server {
 }
 {% endif %}
 
-{% if inventory_hostname in groups['cluster_managers'] and inventory_hostname in groups['cluster_workers'] %}
+{% if inventory_hostname in groups['cluster_workers'] %}
 client {
 	enabled = true
 }

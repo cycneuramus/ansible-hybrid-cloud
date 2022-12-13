@@ -1,17 +1,17 @@
-- name: Workaround OCL iptables quirks
-  when:
-    - "'exo' in groups"
-    - "inventory_hostname in groups['exo']"
-  block:
-    - name: Allow incoming requests via iptables
-      ansible.builtin.iptables:
-        chain: INPUT
-        jump: ACCEPT
-
-    - name: Save iptables rule
-      community.general.iptables_state:
-        state: saved
-        path: /etc/iptables/rules.v4
+# - name: Workaround OCL iptables quirks
+#   when:
+#     - "'exo' in groups"
+#     - "inventory_hostname in groups['exo']"
+#   block:
+#     - name: Allow incoming requests via iptables
+#       ansible.builtin.iptables:
+#         chain: INPUT
+#         jump: ACCEPT
+#
+#     - name: Save iptables rule
+#       community.general.iptables_state:
+#         state: saved
+#         path: /etc/iptables/rules.v4
 
 - name: Install ufw
   apt:
@@ -45,7 +45,6 @@
     direction: in
     interface: wg-mesh
     src: 10.10.10.0/24
-  when: inventory_hostname != "home"
 
 - name: Allow ingress ports on relevant nodes
   ufw:
@@ -58,6 +57,7 @@
     - 80  # http
     - 853 # DoT
     - 993 # mail
+    - 25565 # Minecraft
   when: cluster_labels["ingress"]
 
 - name: Allow vps specific ports

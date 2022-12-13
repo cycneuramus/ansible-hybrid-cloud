@@ -2,9 +2,3 @@
   apt:
     name: "{{ packages_to_install }}"
     update_cache: true
-
-- name: Remove bloat
-  apt:
-    name: snapd
-    purge: true
-    autoremove: true

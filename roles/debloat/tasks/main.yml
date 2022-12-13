@@ -1,0 +1,39 @@
+- name: Remove packages
+  apt:
+    name:
+      - cloud-init
+      - snapd
+    purge: true
+    autoremove: true
+    update_cache: true
+
+- name: Disable cloud-init
+  block:
+    - name: Populate service facts
+      service_facts:
+
+    - name: Disable and stop all cloud-init services
+      service:
+        name: "{{ service }}"
+        state: stopped
+        enabled: false
+      loop: "{{ cloud_init_services }}"
+      loop_control:
+        loop_var: service
+      when:
+        - ansible_facts.services[service] is defined
+        - ansible_facts.services[service].status == 'enabled'
+
+    - name: Check if /etc/cloud/ exists
+      stat:
+        path: /etc/cloud
+      register: etc_cloud_folder
+
+    - name: Generate /etc/cloud/cloud-init.disabled
+      copy:
+        dest: /etc/cloud/cloud-init.disabled
+        content: "Disabled by ansible\n"
+        owner: root
+        group: root
+        mode: 0644
+      when: etc_cloud_folder.stat.exists

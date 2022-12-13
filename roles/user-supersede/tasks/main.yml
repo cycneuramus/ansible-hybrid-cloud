@@ -3,6 +3,7 @@
 
 - name: Kill all processes for user to be modified
   command: pkill -u "{{ new_user }}"
+  ignore_errors: true
   changed_when: false
 
 - name: Find users with home directories

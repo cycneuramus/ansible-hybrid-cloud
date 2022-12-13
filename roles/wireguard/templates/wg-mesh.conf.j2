@@ -8,7 +8,7 @@ Address={{ wireguard_ip }}
 [Peer] # {{ peer }}
 PublicKey={{ hostvars[peer].wireguard_public_key['content'] | b64decode }}
 AllowedIPs={{ hostvars[peer].wireguard_ip }}/32
-Endpoint={{ hostvars[peer].wireguard_endpoint }}:{{ wireguard_port }}
+Endpoint={{ hostvars[peer].wireguard_endpoint }}:{{ hostvars[peer].wireguard_port }}
 PersistentKeepalive = 25
 
 {% endif %}

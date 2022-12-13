@@ -1,7 +1,7 @@
 cidr_whitelist: "{{ vault_cidr_whitelist.split(' ') }}"
 ip_whitelist: "{{ vault_ip_whitelist.split(' ') }}"
 collections_list:
-  - crowdsecurity/caddy
+  # - crowdsecurity/caddy
   - crowdsecurity/dovecot
   - crowdsecurity/iptables
   - crowdsecurity/linux
@@ -17,10 +17,10 @@ acquis_addons: |
   journalctl_filter:
     - "_SYSTEMD_UNIT=ssh.service"
   labels:
-    type: journald"
+    type: journald
   ---
   filenames:
-    - {{ lookup('env', 'HOME') + '/log/access.log' }}
+    - {{ lookup('env', 'HOME') + '/log/caddy/access.log' }}
   labels:
     type: caddy
   ---
