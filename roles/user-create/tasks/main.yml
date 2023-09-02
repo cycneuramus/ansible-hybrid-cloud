@@ -1,0 +1,24 @@
+- name: Ensure sudo is installed
+  apt:
+    name: sudo
+    state: present
+
+- name: Create new user
+  block:
+    - name: Add user
+      user:
+        name: "{{ new_user }}"
+        password: "{{ new_user_pass }}"
+        shell: /bin/bash
+        groups:
+          - sudo
+        append: true
+
+    - name: Upload ssh key
+      authorized_key:
+        user: "{{ item }}"
+        state: present
+        key: "{{ lookup('file', lookup('env', 'HOME') + '/.ssh/id_rsa.pub') }}"
+      loop:
+        - "{{ new_user }}"
+        - root

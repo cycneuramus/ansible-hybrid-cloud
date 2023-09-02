@@ -1,0 +1,5 @@
+cloud_init_services:
+  - "cloud-config.service"
+  - "cloud-final.service"
+  - "cloud-init-local.service"
+  - "cloud-init.service"

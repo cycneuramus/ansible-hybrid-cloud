@@ -1,0 +1,58 @@
+- name: Increase inotify limits
+  sysctl: 
+    name: fs.inotify.max_user_watches
+    value: 204800
+    state: present
+    reload: yes
+
+- name: Stop syncthing service
+  become: true
+  systemd:
+    name: syncthing@{{ syncthing_user }}
+    state: stopped
+  changed_when: false
+
+- name: Clear leftover configs
+  file:
+    path: "{{ syncthing_cfg_dir }}"
+    state: absent
+
+- name: Start syncthing service
+  become: true
+  systemd:
+    name: syncthing@{{ syncthing_user }}
+    state: started
+    enabled: true
+  changed_when: false
+
+- name: Wait for syncthing initialization
+  wait_for:
+    timeout: 3
+
+- name: Stop syncthing service
+  become: true
+  systemd:
+    name: syncthing@{{ syncthing_user }}
+    state: stopped
+  changed_when: false
+
+- name: Remove default sync folder from file system
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop: 
+    - "{{ lookup('env', 'HOME') + '/Sync' }}"
+    - /root/Sync
+
+- name: Ensure desired sync folder is present
+  file:
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    path: "{{ sync_dir }}"
+    state: directory
+
+- name: Remove existing sync folder entries in config
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/folder
+    state: absent

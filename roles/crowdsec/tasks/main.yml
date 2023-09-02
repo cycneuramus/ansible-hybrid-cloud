@@ -1,0 +1,122 @@
+- name: Install dependencies
+  package:
+    update_cache: true
+    name:
+      - curl
+      - gnupg
+      - apt-transport-https
+      - debian-archive-keyring
+      - nftables
+    state: present
+
+- name: Use iptables-nft alternative
+  alternatives:
+    name: "{{ item }}"
+    path: "/usr/sbin/{{ item }}-nft"
+  loop:
+    - iptables
+    - ip6tables
+
+- name: Start nftables services
+  service:
+    name: nftables
+    state: started
+    enabled: true
+
+- name: Add GPG key
+  apt_key:
+    url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
+    state: present
+
+- name: Add Crowdsec repository
+  apt_repository:
+    repo: "deb https://packagecloud.io/crowdsec/crowdsec/{{ ansible_distribution | lower }} {{ ansible_distribution_release | lower }} main"
+    state: present
+
+- name: Update repo cache and install Crowdsec
+  package:
+    update_cache: true
+    name: crowdsec
+    state: latest
+
+- name: Install firewall bouncer
+  package:
+    update_cache: true
+    name: crowdsec-firewall-bouncer-nftables
+    state: present
+
+- name: Update cscli hub
+  command:
+    cmd: cscli hub update
+  changed_when: false
+
+- name: Upgrade cscli hub
+  command:
+    cmd: cscli hub upgrade
+  register: hub_upgrade_result
+  changed_when: false
+
+- name: Install collections
+  command:
+    cmd: "sudo cscli collections install {{ item }}"
+  with_items: "{{ collections_list }}"
+  register: collections_install_result
+  changed_when: "'overwrite' not in collections_install_result.stderr"
+  when: collections_list | length > 0
+
+- name: Install parsers
+  command:
+    cmd: "sudo cscli parsers install {{ item }}"
+  with_items: "{{ parsers_list }}"
+  register: parsers_install_result
+  changed_when: "'overwrite' not in parsers_install_result.stderr"
+  when: parsers_list | length > 0
+
+- name: Enable Prometheus endpoint
+  replace:
+    path: "/etc/crowdsec/config.yaml"
+    after: "prometheus:"
+    regexp: 'enabled:.*$'
+    replace: "enabled: true"
+
+- name: Set ban time
+  replace:
+    path: "/etc/crowdsec/profiles.yaml"
+    after: "- type: ban"
+    regexp: 'duration: [0-9].*$'
+    replace: "{{ ban_duration }}"
+    backup: true
+
+- name: Configure acquis.yml
+  blockinfile:
+    path: /etc/crowdsec/acquis.yaml
+    insertafter: EOF
+    block: "{{ acquis_addons }}"
+
+- name: Whitelist trusted IP ranges
+  template:
+    src: whitelists.j2
+    dest: /etc/crowdsec/parsers/s02-enrich/mywhitelists.yaml
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Configure cscli bash completion
+  shell: |
+    set -o pipefail
+    cscli completion bash | sudo tee /etc/bash_completion.d/cscli
+  register: bash_completion_result
+  changed_when: "'# bash completion for' not in bash_completion_result.stdout"
+  failed_when: "'Error' in bash_completion_result.stderr"
+
+- name: Enable and start Crowdsec service
+  service:
+    name: crowdsec
+    state: started
+    enabled: true
+
+- name: Enable and start firewall bouncer service
+  service:
+    name: crowdsec-firewall-bouncer
+    state: started
+    enabled: true

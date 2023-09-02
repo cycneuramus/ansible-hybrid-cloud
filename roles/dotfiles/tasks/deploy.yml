@@ -1,0 +1,100 @@
+- name: Ensure dependencies are installed
+  become: true
+  apt:
+    update-cache: true
+    name:
+      - bsdmainutils
+      - git
+      - rsync
+
+- name: Start from a clean slate
+  become: true
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ temp_repo }}"
+    - .gitconfig
+    - transcrypt
+    - "{{ local_dotfiles_repo }}"
+
+- name: Ensure local repo's parent directory
+  file:
+    path: "{{ local_dotfiles_repo | dirname }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: 0755
+
+- name: Clone dotfiles repo
+  git:
+    repo: "{{ remote_dotfiles_repo }}"
+    dest: "{{ temp_repo }}"
+    separate_git_dir: "{{ local_dotfiles_repo }}"
+    single_branch: true
+    version: "{{ git_branch | default('homeserver') }}"
+
+- name: Clone transcrypt repo
+  git:
+    repo: https://github.com/elasticdog/transcrypt.git
+    dest: transcrypt
+    single_branch: true
+    version: main
+
+- name: Workaround "dirty repo" complaints from transcrypt
+  shell: |
+    [ -d "{{ temp_repo }}" ] && git -C "{{ temp_repo }}" status > /dev/null
+  changed_when: false
+
+- name: Setup dotfiles encryption
+  shell: |
+    set -o pipefail
+    [ -d "{{ temp_repo }}" ] && cd "{{ temp_repo }}"
+    yes | "$HOME"/transcrypt/transcrypt -c aes-256-cbc -p "{{ transcrypt_pass }}"
+  register: result
+  failed_when: "'successfully configured' not in result.stdout"
+  changed_when: true
+  args:
+    executable: /bin/bash
+
+- name: Deploy dotfiles
+  synchronize:
+    src: "{{ lookup('env', 'HOME') }}/{{ temp_repo }}/"
+    dest: "{{ lookup('env', 'HOME') }}/"
+    recursive: true
+    rsync_opts:
+      - "--verbose"
+      - "--exclude '.git'"
+  delegate_to: "{{ inventory_hostname }}"
+
+- name: Don't show untracked files
+  git_config:
+    name: status.showUntrackedFiles
+    value: "no"
+    scope: global
+
+- name: Store git credentials
+  git_config:
+    name: credential.helper
+    scope: global
+    value: store
+
+- name: Set git username
+  git_config:
+    name: user.name
+    scope: global
+    value: "{{ git_username }}"
+
+- name: Set git email
+  git_config:
+    name: user.email
+    scope: global
+    value: "{{ git_email }}"
+
+- name: Clean up
+  file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - transcrypt
+    - "{{ temp_repo }}"

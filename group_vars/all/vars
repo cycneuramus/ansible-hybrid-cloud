@@ -1,0 +1,18 @@
+orchestrator: nomad
+protection: crowdsec
+storage: syncthing
+vagrant: false
+
+ansible_port: 22
+ansible_user: "{{ vault_user }}"
+new_user: "{{ vault_new_user }}"
+new_user_uid: "{{ vault_new_user_uid }}"
+new_user_pass: "{{ vault_new_user_pass }}"
+host_arm: "{{ vault_host_arm }}"
+host_green: "{{ vault_host_green }}"
+host_apex: "{{ vault_host_apex }}"
+host_home: "{{ vault_host_home }}"
+host_raspi: "{{ vault_host_raspi }}"
+host_vps: "{{ vault_host_vps }}"
+wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
+wireguard_port: 51820

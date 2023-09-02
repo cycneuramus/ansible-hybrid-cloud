@@ -1,0 +1,8 @@
+- name: Install syncthing
+  include_tasks: install.yml
+
+- name: Initialize syncthing
+  include_tasks: init.yml
+
+- name: Configure syncthing
+  include_tasks: configure.yml

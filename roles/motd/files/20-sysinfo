@@ -1,0 +1,37 @@
+#!/bin/sh
+cpu() {
+	python3 - <<- EOF
+		import psutil
+		cpu = int(psutil.cpu_percent(0.1))
+		print(f"{cpu}%")
+	EOF
+}
+
+cpu_load=$(cpu)
+if [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+	cpu_temp=$(sed 's/...$/°C/' /sys/class/thermal/thermal_zone0/temp)
+fi
+memory_usage=$(free -m | awk '/Mem/ { printf("%3.1f%%", $3/($2+1)*100) }')
+swap_usage=$(free -m | awk '/Swap/ { printf("%3.1f%%", $3/($2+1)*100) }')
+disk_usage=$(df -h | awk '{if($(NF) == "/") {print $(NF-1); exit;}}')
+sys_uptime=$(uptime -p | sed 's/up //')
+
+color_default="\033[0m"
+color_info="\033[0;37m"
+color_value="\033[01;34m"
+
+uname -snrvm
+printf "\n"
+printf "${color_info}CPU Usage      :${color_value} %s\n" "${cpu_load}"
+if [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+	printf "${color_info}CPU Temp       :${color_value} %s\n" "${cpu_temp}"
+fi
+printf "${color_info}Memory Usage   :${color_value} %s\n" "${memory_usage}"
+printf "${color_info}Swap Usage     :${color_value} %s\n" "${swap_usage}"
+printf "${color_info}Disk Usage     :${color_value} %s\n" "${disk_usage}"
+printf "${color_info}System Uptime  :${color_value} %s\n" "${sys_uptime}"
+printf "${color_default}"
+printf "\n"
+if [ -x /usr/share/unattended-upgrades/update-motd-unattended-upgrades ]; then
+	exec /usr/share/unattended-upgrades/update-motd-unattended-upgrades
+fi

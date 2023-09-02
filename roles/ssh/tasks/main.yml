@@ -1,0 +1,33 @@
+- name: Ensure ssh daemon
+  service:
+    name: ssh
+    state: started
+
+- name: Harden ssh config
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    regexp: "{{ item.regexp }}"
+    line: "{{ item.line }}"
+    state: present
+    validate: "sshd -T -f %s"
+  loop:
+    - regexp: "^PasswordAuthentication"
+      line: "PasswordAuthentication no"
+    - regexp: "^PermitRootLogin"
+      line: "PermitRootLogin no"
+    - regexp: "^Port"
+      line: "Port {{ ansible_port | default('22') }}"
+
+- name: Enable password auth on local networks
+  blockinfile:
+    path: /etc/ssh/sshd_config
+    validate: "sshd -T -f %s"
+    block: |
+      Match Address 10.0.0.0/8,172.16.0.0/12,192.168.0.0/16,127.0.0.1/32
+        PermitRootLogin prohibit-password
+        PasswordAuthentication yes
+
+- name: Restart ssh daemon
+  service:
+    name: ssh
+    state: restarted

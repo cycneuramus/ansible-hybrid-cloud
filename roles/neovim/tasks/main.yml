@@ -1,0 +1,40 @@
+- name: Uninstall old neovim
+  apt: name=neovim state=absent
+
+- name: Install Python dependencies
+  apt:
+    pkg:
+      - python3-pynvim
+      - python3-venv
+    update_cache: true
+
+- name: Download nvim appimage
+  get_url:
+    url: https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+    dest: /tmp/nvim.appimage
+    mode: "0775"
+
+- name: Install nvim
+  copy:
+    src: /tmp/nvim.appimage
+    dest: /usr/local/bin/nvim
+    owner: root
+    group: root
+    mode: "0755"
+    remote_src: true
+
+- name: Use nvim for vi
+  alternatives: name=vi path=/usr/local/bin/nvim
+
+- name: Use nvim for vim
+  alternatives: name=vim path=/usr/local/bin/nvim
+
+- name: Use nvim for editor
+  alternatives: name=editor path=/usr/local/bin/nvim
+
+- name: Sync local nvim config to remotes
+  copy:
+    src: "{{ lookup('env', 'HOME') + '/.config/nvim' }}"
+    dest: "{{ lookup('env', 'HOME') + '/.config' }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"

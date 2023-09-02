@@ -1,0 +1,100 @@
+name = "{{ inventory_hostname }}"
+region = "global"
+datacenter = "dc1"
+
+advertise {
+{%- if "{{ inventory_hostname }}" == "apex" -%}
+	http = "0.0.0.0"
+{%- else -%}
+	http = "{{ wireguard_ip }}"
+{%- endif %}
+	rpc = "{{ wireguard_ip }}"
+	serf = "{{ wireguard_ip }}"
+}
+
+data_dir = "{{ nomad_data_dir }}"
+plugin_dir = "{{ nomad_data_dir }}/plugins"
+log_level = "warn"
+log_file = "{{ nomad_data_dir }}/logs/nomad.log"
+log_rotate_max_files = 5
+enable_syslog = false
+
+client {
+	enabled = true
+	network_interface = "wg-mesh"
+
+	host_network "private" {
+		cidr = "10.10.10.0/24"
+		interface = "wg-mesh"
+	}
+
+	host_network "public" {
+		interface = {% raw %}"{{ GetDefaultInterfaces | limit 1 | attr \"name\" }}"{% endraw %}
+	}
+
+	template {
+		disable_file_sandbox = true
+	}
+
+	meta {
+		{%- for k,v in hostvars[inventory_hostname].cluster_labels.items() %}
+		{{ k }} = "{{ v }}"
+		{%- endfor %}
+	}
+
+{%- set server_ip = [] %}
+{%- for host in ansible_play_batch %}
+{%- if host in groups['cluster_managers'] %}
+{{ server_ip.append(hostvars[host].wireguard_ip) }}
+{%- endif %}
+{%- endfor %}
+	servers = [ {{ '\"' + server_ip | join('\", \"') + '\"' }} ]
+}
+
+{% if inventory_hostname in groups['cluster_managers'] %}
+server {
+	enabled = true
+	default_scheduler_config {
+		scheduler_algorithm = "spread"
+		memory_oversubscription_enabled = true
+	}
+
+	{%- if vagrant -%}
+	bootstrap_expect = 1
+	{%- else -%}
+	bootstrap_expect = 3
+	{%- endif %}
+
+	server_join {
+		retry_join = [ {{ '\"' + server_ip | join('\", \"') + '\"' }} ]
+	}
+
+	# job_gc_threshold = "5m"
+}
+{% endif %}
+
+{% if inventory_hostname in groups['cluster_workers'] %}
+client {
+	enabled = true
+}
+{%- endif %}
+
+plugin "docker" {
+	config {
+		allow_privileged = true
+
+		volumes {
+			enabled = true
+		}
+
+		gc {
+			image_delay = "24h"
+		}
+	}
+}
+
+plugin "raw_exec" {
+	config {
+		enabled = true
+	}
+}

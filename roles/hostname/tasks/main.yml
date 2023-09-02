@@ -1,0 +1,9 @@
+- name: Set hostname
+  hostname:
+    name: "{{ inventory_hostname }}"
+
+- name: Add to /etc/hosts
+  lineinfile:
+    path: /etc/hosts
+    insertafter: ^127\.0\.0\.1\slocalhost
+    line: 127.0.0.1 {{ inventory_hostname }}

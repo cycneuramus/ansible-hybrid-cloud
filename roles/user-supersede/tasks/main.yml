@@ -1,0 +1,36 @@
+- name: Kill all processes for user to be modified
+  command: pkill -u "{{ new_user }}"
+  ignore_errors: true
+  changed_when: false
+
+- name: Find users with home directories
+  find:
+    paths: /home
+    recurse: false
+    file_type: directory
+    excludes: "{{ new_user }}"
+  register: home_dirs
+
+- name: Delete superfluous users
+  user:
+    name: "{{ item.path | basename }}"
+    state: absent
+    remove: true
+    force: true
+  loop: "{{ home_dirs.files }}"
+  when: home_dirs.files | length > 0
+
+# We do all this after user creation and deletions in case new_user_uid was initially taken
+- name: Ensure new user's group exists
+  group:
+    name: "{{ new_user }}"
+    gid: "{{ new_user_uid }}"
+    state: present
+
+- name: Set desired uid and groups for new user
+  user:
+    name: "{{ new_user }}"
+    uid: "{{ new_user_uid }}"
+    groups:
+      - "{{ new_user_uid }}"
+    append: true

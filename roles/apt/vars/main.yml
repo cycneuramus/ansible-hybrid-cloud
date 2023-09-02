@@ -1,0 +1,14 @@
+packages_to_install:
+    - bash-completion
+    - cron
+    - curl
+    - git
+    - htop
+    - jq
+    - nodejs
+    - npm
+    - rsync
+    - shellcheck
+    - ufw
+    - unattended-upgrades
+    - wireguard

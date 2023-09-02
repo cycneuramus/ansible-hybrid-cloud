@@ -1,0 +1,9 @@
+- name: Check if dotfiles are deployed
+  command: git --git-dir="{{ local_dotfiles_repo }}" --work-tree=$HOME status
+  register: dotfiles_deployed
+  ignore_errors: true
+  changed_when: false
+
+- name: Deploy dotfiles
+  include_tasks: deploy.yml
+  when: dotfiles_deployed.failed

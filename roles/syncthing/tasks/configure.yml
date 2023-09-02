@@ -1,0 +1,106 @@
+- name: Set sync folder
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration
+    pretty_print: true
+    add_children:
+      - folder:
+          path: "{{ sync_dir }}"
+          id: default
+          label: Cloud
+          rescanIntervalS: "3600"
+          fsWatcherEnabled: "true"
+          fsWatcherDelayS: "15"
+          ignorePerms: "false"
+          autoNormalize: "true"
+
+- name: Configure whitelist
+  template:
+    src: stignore.j2
+    dest: "{{ sync_dir }}/.stignore"
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Configure sync folder
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/folder[@label="Cloud"]
+    pretty_print: true
+    add_children:
+      # - syncOwnership: "true"
+      - syncXattrs: "true"
+      - copyOwnershipFromParent: "true"
+
+- name: Set GUI on home node
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/gui/address
+    value: "0.0.0.0:8384"
+  when: inventory_hostname == "home"
+
+- name: Disable GUI everywhere else
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/gui
+    attribute: enabled
+    value: "false"
+  when: inventory_hostname != "home"
+
+- name: Configure general options
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: "/configuration/options/{{ item }}"
+    value: "false"
+  loop:
+    - crashReportingEnabled
+    - globalAnnounceEnabled
+    - relaysEnabled
+    - startBrowser
+
+- name: Collect device ids
+  command: /usr/bin/syncthing -device-id
+  register: device_id
+
+- name: Remove existing device entries
+  xml:
+    path: "{{ syncthing_cfg_file }}"
+    xpath: /configuration/device
+    state: absent
+
+- name: Add devices
+  include_tasks: add_device.yml
+  loop: "{{ ansible_play_batch }}"
+  loop_control:
+    loop_var: device_item
+  when: device_item != "raspi"
+
+- name: Create an override directory to customize service
+  become: true
+  file:
+    owner: root
+    group: root
+    mode: 0755
+    path: /etc/systemd/system/syncthing@.d
+    state: directory
+  when: syncthing_user != "root"
+
+- name: Grant service extended capabilities for syncOwnership to work
+  become: true
+  ini_file:
+    dest: /etc/systemd/system/syncthing@.d/cap_override.conf
+    owner: root
+    group: root
+    mode: 0644
+    section: Service
+    option: AmbientCapabilities
+    value: CAP_CHOWN CAP_FOWNER CAP_DAC_READ_SEARCH
+  when: syncthing_user != "root"
+
+- name: Start and enable syncthing service
+  become: true
+  systemd:
+    name: syncthing@{{ syncthing_user }}
+    state: started
+    enabled: true
+  changed_when: false

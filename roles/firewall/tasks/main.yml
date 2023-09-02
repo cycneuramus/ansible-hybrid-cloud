@@ -1,0 +1,72 @@
+- name: Workaround OCL iptables quirks
+  when:
+    - cluster_labels["datacenter"] == "ocl"
+  block:
+    - name: Allow incoming requests via iptables
+      ansible.builtin.iptables:
+        chain: INPUT
+        jump: ACCEPT
+    - name: Save iptables rule
+      community.general.iptables_state:
+        state: saved
+        path: /etc/iptables/rules.v4
+
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+
+- name: Reset ufw
+  ufw:
+    state: reset
+
+- name: Enable ufw
+  ufw:
+    state: enabled
+    policy: deny
+
+- name: Limit ssh port
+  ufw:
+    rule: limit
+    proto: tcp
+    port: ssh
+
+- name: Allow wireguard port
+  ufw:
+    rule: allow
+    port: 51820
+
+- name: Allow traffic from private ranges
+  become: true
+  ufw:
+    rule: allow
+    direction: in
+    # interface: wg-mesh
+    src: '{{ item }}'
+  loop:
+    - 10.0.0.0/8
+    - 172.16.0.0/12
+    - 192.168.0.0/16
+
+- name: Allow ingress ports on relevant nodes
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - 25 # mail
+    - 443 # https
+    - 465 # mail
+    - 80 # http
+    - 853 # DoT
+    - 993 # mail
+    - 37663 # mc
+  when: cluster_labels["ingress"] == "true"
+
+- name: Allow vps specific ports
+  ufw:
+    rule: allow
+    port: "{{ item }}"
+  loop:
+    - 4422
+    - 51280
+  when: inventory_hostname == "vps"

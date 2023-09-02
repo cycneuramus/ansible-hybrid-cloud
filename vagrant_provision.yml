@@ -1,0 +1,5 @@
+- name: Setup users
+  hosts: all
+  roles:
+    - role: user-create
+      become: true

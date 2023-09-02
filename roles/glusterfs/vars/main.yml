@@ -1,0 +1,3 @@
+gluster_mount_dir: "{{ lookup('env', 'HOME') + '/cld' }}"
+gluster_brick_dir: "{{ lookup('env', 'HOME') + '/.local/share/gluster/brick' }}"
+gluster_brick_name: gluster

@@ -1,0 +1,52 @@
+- name: Allow ip forwarding
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: true
+    state: present
+    reload: true
+
+- name: Install wireguard
+  apt:
+    name: wireguard
+    state: present
+
+- name: Generate wireguard keypair
+  shell: |
+    set -o pipefail
+    wg genkey | tee /etc/wireguard/privatekey | wg pubkey | tee /etc/wireguard/publickey
+  args:
+    creates: /etc/wireguard/privatekey
+    executable: /bin/bash
+
+- name: Register private key
+  slurp:
+    src: /etc/wireguard/privatekey
+  register: wireguard_private_key
+
+- name: Register public key
+  slurp:
+    src: /etc/wireguard/publickey
+  register: wireguard_public_key
+
+- name: Setup wg-mesh config
+  template:
+    src: wg-mesh.conf.j2
+    dest: /etc/wireguard/wg-mesh.conf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Disable and stop wg-mesh service
+  systemd:
+    name: wg-quick@wg-mesh.service
+    state: stopped
+    enabled: false
+  changed_when: false
+
+- name: Enable and start wg-mesh service
+  systemd:
+    name: wg-quick@wg-mesh.service
+    state: started
+    enabled: true
+  changed_when: false

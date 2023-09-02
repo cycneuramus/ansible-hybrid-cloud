@@ -1,0 +1,14 @@
+name: crowdsecurity/whitelists
+description: "Whitelist events from approved IP addresses"
+whitelist:
+  reason: "My IP addresses and ranges"
+  ip:
+    - "127.0.0.1"
+    - "::1"
+{% for ip in ip_whitelist %}
+    - "{{ ip }}"
+{% endfor %}
+  cidr: 
+{% for cidr in cidr_whitelist %}
+    - "{{ cidr }}"
+{% endfor %}

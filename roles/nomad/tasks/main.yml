@@ -1,0 +1,61 @@
+- name: Add GPG key
+  apt_key:
+    url: https://apt.releases.hashicorp.com/gpg
+    state: present
+
+- name: Add hashicorp repository
+  apt_repository:
+    repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
+    state: present
+
+- name: Install nomad
+  apt:
+    update_cache: true
+    name:
+      - nomad
+
+- name: Stop nomad
+  systemd:
+    name: nomad
+    state: stopped
+    daemon_reload: true
+
+- name: Clean out previous configurations
+  file:
+    path: "{{ nomad_data_dir }}"
+    state: absent
+
+- name: Ensure nomad data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "755"
+  loop:
+    - "{{ nomad_data_dir }}"
+    - "{{ nomad_data_dir }}/plugins"
+    - "{{ nomad_data_dir }}/logs"
+
+- name: Create nomad service
+  template:
+    src: nomad.service.j2
+    dest: /etc/systemd/system/nomad.service
+    mode: "644"
+
+- name: Deploy config
+  template:
+    src: nomad.hcl.j2
+    dest: "{{ nomad_data_dir }}/nomad.hcl"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "644"
+
+- name: Format config file
+  command: nomad fmt "{{ nomad_data_dir }}"/nomad.hcl
+
+- name: Enable and start nomad service
+  systemd:
+    name: nomad
+    enabled: true
+    state: started

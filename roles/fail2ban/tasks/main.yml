@@ -1,0 +1,78 @@
+- name: Install dependencies
+  apt:
+    name:
+      - fail2ban
+      - mmdb-bin
+      - ufw
+    state: present
+
+- name: Ensure ufw is enabled
+  ufw:
+    state: enabled
+
+- name: Setup jails
+  template:
+    src: jail.local.j2
+    dest: /etc/fail2ban/jail.local
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ensure caddy log file
+  file:
+    path: "{{ lookup('env', 'HOME') + '/log/access.log' }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: touch
+    mode: 0644
+
+- name: Setup filters
+  copy:
+    src: caddy.conf
+    dest: /etc/fail2ban/filter.d/caddy.conf
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Setup gotify action
+  template:
+    src: gotify.local.j2
+    dest: /etc/fail2ban/action.d/gotify.local
+    owner: root
+    group: root
+    mode: 0600
+
+- name: Ensure $HOME/bin
+  file:
+    path: "{{ lookup('env', 'HOME') + '/bin' }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    state: directory
+    mode: 0755
+
+- name: Copy action notifier to $HOME/bin
+  template:
+    src: fail2ban-action.sh.j2
+    dest: "{{ lookup('env', 'HOME') + '/bin/fail2ban-action.sh' }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+
+- name: Stop fail2ban service
+  systemd:
+    name: fail2ban
+    state: stopped
+  changed_when: false
+
+- name: Start and enable fail2ban service
+  systemd:
+    name: fail2ban
+    state: started
+    enabled: true
+  changed_when: false
+
+- name: Restart ufw service
+  systemd:
+    name: ufw
+    state: restarted
+  changed_when: false

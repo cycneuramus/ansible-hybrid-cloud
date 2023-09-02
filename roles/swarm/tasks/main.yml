@@ -1,0 +1,106 @@
+- name: Install dependencies
+  become: true
+  apt:
+    name:
+      - python3-docker
+      - python3-pexpect
+    state: present
+
+- name: Drain swarm nodes
+  docker_node:
+    hostname: "{{ hostvars[item]['ansible_hostname'] }}"
+    availability: drain
+  loop: "{{ ansible_play_batch }}"
+  when: inventory_hostname in groups['cluster_managers'][0]
+  ignore_errors: true
+
+- name: Disable rclone docker volume plugin
+  become: true
+  community.docker.docker_plugin:
+    plugin_name: rclone/docker-volume-rclone:{{ arch }}
+    alias: rclone
+    state: disable
+    force_remove: true
+  when: cluster_labels["performance"] == "high"
+  ignore_errors: true
+
+- name: Remove swarm managers
+  docker_swarm:
+    state: absent
+    force: true
+  ignore_errors: true
+
+- name: Remove swarm workers
+  docker_swarm:
+    state: absent
+  ignore_errors: true
+
+- name: Init a new swarm with default parameters
+  docker_swarm:
+    state: present
+    advertise_addr: "{{ swarm_interface }}"
+  register: swarm_info
+  when: inventory_hostname == groups['cluster_managers'][0]
+
+- name: Set swarm interop facts
+  set_fact:
+    swarm_address: "{{ hostvars[groups['cluster_managers'][0]].wireguard_ip }}"
+    manager_token: "{{ hostvars[groups['cluster_managers'][0]].swarm_info.swarm_facts.JoinTokens.Manager }}"
+    worker_token: "{{ hostvars[groups['cluster_managers'][0]].swarm_info.swarm_facts.JoinTokens.Worker }}"
+
+- name: Add manager nodes
+  docker_swarm:
+    state: join
+    join_token: "{{ manager_token }}"
+    remote_addrs: "{{ swarm_address }}"
+    advertise_addr: "{{ swarm_interface }}"
+  when: "'cluster_managers' in group_names"
+
+- name: Add worker nodes
+  docker_swarm:
+    state: join
+    join_token: "{{ worker_token }}"
+    remote_addrs: "{{ swarm_address }}"
+    advertise_addr: "{{ swarm_interface }}"
+  when: "'cluster_workers' in group_names"
+
+- name: Add labels to nodes set in the inventory
+  docker_node:
+    hostname: "{{ hostvars[item]['ansible_hostname'] }}"
+    labels: "{{ hostvars[item]['cluster_labels'] | default({}) }}"
+  loop: "{{ ansible_play_batch }}"
+  when: inventory_hostname == groups['cluster_managers'][0]
+
+- name: Ensure compatibility with Wireguard MTU
+  when: inventory_hostname == groups['cluster_managers'][0]
+  block:
+    - name: Remove default ingress network
+      expect:
+        command: docker network rm ingress
+        responses:
+          "[y/N]": "y"
+
+    - name: Create ingress network with adjusted MTU
+      command: >
+        docker network create
+        --driver overlay --ingress
+        --opt com.docker.network.driver.mtu=1420
+        ingress
+      changed_when: true
+
+- name: Create overlay network for reverse proxy
+  docker_network:
+    name: "{{ overlay_network }}"
+    driver: overlay
+    attachable: true
+    driver_options:
+      com.docker.network.driver.mtu: 1420
+  when: inventory_hostname == groups['cluster_managers'][0]
+
+- name: Enable rclone docker volume plugin
+  become: true
+  community.docker.docker_plugin:
+    plugin_name: rclone/docker-volume-rclone:{{ arch }}
+    alias: rclone
+    state: enable
+  when: cluster_labels["performance"] == "high"

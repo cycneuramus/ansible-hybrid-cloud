@@ -1,0 +1,80 @@
+all:
+  children:
+    servers:
+      hosts:
+        apex:
+          arch: amd64
+          ansible_host: "{{ host_apex }}"
+          git_branch: homeserver
+          wireguard_ip: 10.10.10.10
+          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
+          wireguard_port: 51028
+          cluster_labels:
+            performance: high
+            datacenter: eso
+            ingress: "false"
+            storage: large
+        home:
+          arch: amd64
+          ansible_host: "{{ host_home }}"
+          git_branch: homeserver
+          wireguard_ip: 10.10.10.11
+          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
+          cluster_labels:
+            performance: high
+            datacenter: eso
+            ingress: "false"
+            storage: large
+        raspi:
+          arch: arm64
+          ansible_host: "{{ host_raspi }}"
+          wireguard_ip: 10.10.10.12
+          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
+          wireguard_port: 51082
+          cluster_labels:
+            performance: low
+            datacenter: eso
+            ingress: "false"
+            storage: small
+        vps:
+          arch: amd64
+          ansible_host: "{{ host_vps }}"
+          ansible_port: 4422
+          wireguard_ip: 10.10.10.13
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: exo
+            ingress: "true"
+            storage: large
+        green:
+          arch: amd64
+          ansible_host: "{{ host_green }}"
+          wireguard_ip: 10.10.10.14
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: exo
+            ingress: "true"
+            storage: small
+        arm:
+          arch: arm64
+          ansible_host: "{{ host_arm }}"
+          wireguard_ip: 10.10.10.15
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: ocl
+            ingress: "false"
+            storage: small
+    cluster_managers:
+      hosts:
+        apex:
+        raspi:
+        vps:
+    cluster_workers:
+      hosts:
+        home:
+        raspi:
+        green:
+        arm:

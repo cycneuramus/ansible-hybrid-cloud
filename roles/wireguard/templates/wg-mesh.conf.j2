@@ -1,0 +1,19 @@
+[Interface]
+ListenPort={{ wireguard_port }}
+PrivateKey={{ wireguard_private_key['content'] | b64decode }}
+Address={{ wireguard_ip }}
+
+{% for peer in ansible_play_batch %}
+{% if peer != inventory_hostname %}
+[Peer] # {{ peer }}
+PublicKey={{ hostvars[peer].wireguard_public_key['content'] | b64decode }}
+AllowedIPs={{ hostvars[peer].wireguard_ip }}/32
+{% if hostvars[inventory_hostname].cluster_labels["datacenter"] == "eso" and hostvars[peer].cluster_labels["datacenter"] == "eso" %}
+Endpoint={{ hostvars[peer].ansible_host }}:{{ hostvars[peer].wireguard_port }}
+{% else %}
+Endpoint={{ hostvars[peer].wireguard_endpoint }}:{{ hostvars[peer].wireguard_port }}
+{% endif %}
+PersistentKeepalive = 25
+
+{% endif %}
+{% endfor %}
