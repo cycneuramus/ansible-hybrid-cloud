@@ -96,14 +96,14 @@
         - inventory_hostname != "raspi"
       tags: syncthing
 
-    - role: swarm
-      when: orchestrator == "swarm"
-      tags: swarm
-
     - role: glusterfs
       become: true
       when: storage == "glusterfs"
       tags: glusterfs
+
+    - role: swarm
+      when: orchestrator == "swarm"
+      tags: swarm
 
     - role: nomad
       become: true
