@@ -3,11 +3,11 @@ region = "global"
 datacenter = "dc1"
 
 advertise {
-{%- if "{{ inventory_hostname }}" == "apex" -%}
+{% if "{{ inventory_hostname }}" == "apex" %}
 	http = "0.0.0.0"
-{%- else -%}
+{% else %}
 	http = "{{ wireguard_ip }}"
-{%- endif %}
+{% endif %}
 	rpc = "{{ wireguard_ip }}"
 	serf = "{{ wireguard_ip }}"
 }
@@ -28,21 +28,27 @@ client {
 		interface = "wg-mesh"
 	}
 
+	{% raw %}
 	host_network "public" {
-		interface = {% raw %}"{{ GetDefaultInterfaces | limit 1 | attr \"name\" }}"{% endraw %}
+		interface = "{{ GetDefaultInterfaces | limit 1 | attr \"name\" }}"
 	}
+	{% endraw %}
 
 	template {
 		disable_file_sandbox = true
 	}
 
 	meta {
-		{%- for k,v in hostvars[inventory_hostname].cluster_labels.items() %}
+		{% for k,v in hostvars[inventory_hostname].cluster_labels.items() %}
 		{{ k }} = "{{ v }}"
-		{%- endfor %}
+		{% endfor %}
 	}
 
-{%- set server_ip = [] %}
+{% if inventory_hostname == "arm" }
+	cpu_total_compute = 8000
+{% endif %}
+
+{% set server_ip = [] %}
 {%- for host in ansible_play_batch %}
 {%- if host in groups['cluster_managers'] %}
 {{ server_ip.append(hostvars[host].wireguard_ip) }}
@@ -59,11 +65,11 @@ server {
 		memory_oversubscription_enabled = true
 	}
 
-	{%- if vagrant -%}
+	{% if vagrant -%}
 	bootstrap_expect = 1
 	{%- else -%}
 	bootstrap_expect = 3
-	{%- endif %}
+	{% endif -%}
 
 	server_join {
 		retry_join = [ {{ '\"' + server_ip | join('\", \"') + '\"' }} ]
@@ -72,12 +78,6 @@ server {
 	# job_gc_threshold = "5m"
 }
 {% endif %}
-
-{% if inventory_hostname in groups['cluster_workers'] %}
-client {
-	enabled = true
-}
-{%- endif %}
 
 plugin "docker" {
 	config {

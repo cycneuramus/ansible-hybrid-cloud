@@ -14,6 +14,9 @@
     name:
       - nomad
 
+- name: Let Nomad garbage collect
+  command: nomad system gc
+
 - name: Stop nomad
   systemd:
     name: nomad

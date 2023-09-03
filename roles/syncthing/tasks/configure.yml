@@ -37,7 +37,7 @@
     path: "{{ syncthing_cfg_file }}"
     xpath: /configuration/gui/address
     value: "0.0.0.0:8384"
-  when: inventory_hostname == "home"
+  when: inventory_hostname == "apex"
 
 - name: Disable GUI everywhere else
   xml:
