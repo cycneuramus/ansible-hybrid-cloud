@@ -87,25 +87,35 @@
 
     - role: wireguard
       become: true
-      tags: wireguard
+      tags:
+        - wireguard
+        - cluster
 
     - role: syncthing
       become: true
       when:
         - storage == "syncthing"
         - inventory_hostname != "raspi"
-      tags: syncthing
+      tags:
+        - syncthing
+        - cluster
 
     - role: glusterfs
       become: true
       when: storage == "glusterfs"
-      tags: glusterfs
+      tags:
+        - glusterfs
+        - cluster
 
     - role: swarm
       when: orchestrator == "swarm"
-      tags: swarm
+      tags:
+        - swarm
+        - cluster
 
     - role: nomad
       become: true
       when: orchestrator == "nomad"
-      tags: nomad
+      tags:
+        - nomad
+        - cluster

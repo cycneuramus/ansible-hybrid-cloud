@@ -28,23 +28,23 @@ all:
             ingress: "false"
             storage: large
 
-        raspi:
-          arch: arm64
-          ansible_host: "{{ host_raspi }}"
-          wireguard_ip: 10.10.10.12
-          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
-          wireguard_port: 51082
-          cluster_labels:
-            performance: low
-            datacenter: eso
-            ingress: "false"
-            storage: small
+        # raspi:
+        #   arch: arm64
+        #   ansible_host: "{{ host_raspi }}"
+        #   wireguard_ip: 10.10.10.12
+        #   wireguard_endpoint: "{{ wireguard_endpoint_home }}"
+        #   wireguard_port: 51082
+        #   cluster_labels:
+        #     performance: low
+        #     datacenter: eso
+        #     ingress: "false"
+        #     storage: small
 
         vps:
           arch: amd64
           ansible_host: "{{ host_vps }}"
           ansible_port: 4422
-          wireguard_ip: 10.10.10.13
+          wireguard_ip: 10.10.10.12
           wireguard_endpoint: "{{ ansible_host }}"
           cluster_labels:
             performance: high
@@ -55,7 +55,7 @@ all:
         green:
           arch: amd64
           ansible_host: "{{ host_green }}"
-          wireguard_ip: 10.10.10.14
+          wireguard_ip: 10.10.10.13
           wireguard_endpoint: "{{ ansible_host }}"
           cluster_labels:
             performance: high
@@ -66,7 +66,7 @@ all:
         arm:
           arch: arm64
           ansible_host: "{{ host_arm }}"
-          wireguard_ip: 10.10.10.15
+          wireguard_ip: 10.10.10.14
           wireguard_endpoint: "{{ ansible_host }}"
           cluster_labels:
             performance: high
@@ -83,5 +83,4 @@ all:
     cluster_workers:
       hosts:
         home:
-        raspi:
         arm:
