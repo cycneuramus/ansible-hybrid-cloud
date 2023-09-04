@@ -45,7 +45,7 @@
     xpath: /configuration/gui
     attribute: enabled
     value: "false"
-  when: inventory_hostname != "home"
+  when: inventory_hostname != "apex"
 
 - name: Configure general options
   xml:
