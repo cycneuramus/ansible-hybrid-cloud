@@ -3,7 +3,7 @@ region = "global"
 datacenter = "dc1"
 
 advertise {
-{% if "{{ inventory_hostname }}" == "apex" %}
+{% if "{{ inventory_hostname }}" == "{{ leader_node }}" %}
 	http = "0.0.0.0"
 {% else %}
 	http = "{{ wireguard_ip }}"

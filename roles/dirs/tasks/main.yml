@@ -6,7 +6,6 @@
       group: "{{ ansible_user }}"
       mode: "755"
   with_items:
-      - .cache/tdarr
       - dl
       - log
       - mnt
