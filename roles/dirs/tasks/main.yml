@@ -19,6 +19,14 @@
       group: "{{ ansible_user }}"
       mode: "755"
 
+- name: Create mail log directory
+  ansible.builtin.file:
+      path: log/mail
+      state: directory
+      owner: "{{ ansible_user }}"
+      group: "{{ ansible_user }}"
+      mode: "755"
+
 # - name: Create root directories
 #   become: true
 #   ansible.builtin.file:
