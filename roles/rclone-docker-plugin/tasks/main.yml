@@ -2,7 +2,7 @@
   become: true
   package:
     name:
-      - fuse
+      - fuse3
       - unzip
     state: present
 
@@ -70,7 +70,7 @@
   with_items:
     - "{{ lookup('env', 'HOME') + '/.config/rclone' }}"
     - "{{ lookup('env', 'HOME') + '/.cache/rclone/docker' }}"
-      
+
 # - name: Check if rclone config exists
 #   stat:
 #     path: "{{ lookup('env', 'HOME') }}/.config/rclone/rclone.conf"
