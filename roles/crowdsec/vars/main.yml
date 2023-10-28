@@ -25,7 +25,7 @@ acquis_addons: |
     type: caddy
   ---
   filenames:
-    - {{ lookup('env', 'HOME') + 'log/mail/mail.log' }}
+    - {{ lookup('env', 'HOME') + '/log/mail/mail.log' }}
   labels:
     type: syslog
   ---
