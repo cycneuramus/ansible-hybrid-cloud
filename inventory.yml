@@ -71,7 +71,7 @@ all:
           cluster_labels:
             performance: high
             datacenter: ocl
-            ingress: "false"
+            ingress: "true"
             storage: small
 
     cluster_managers:

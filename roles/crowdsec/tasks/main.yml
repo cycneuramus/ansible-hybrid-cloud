@@ -45,6 +45,13 @@
     name: crowdsec-firewall-bouncer-nftables
     state: present
 
+- name: Enable DOCKER-USER chain in firewall bouncer
+  replace:
+    path: /etc/crowdsec/bouncers/crowdsec-firewall-bouncer.yaml
+    regexp: ".*DOCKER-USER"
+    replace: "  - DOCKER-USER"
+    validate: "crowdsec-firewall-bouncer -t -c %s"
+
 - name: Update cscli hub
   command:
     cmd: cscli hub update
