@@ -1,4 +1,4 @@
+syncthing_user: "{{ ansible_user }}"
+syncthing_cfg_dir: "{{ lookup('env', 'HOME') + '/.local/state/syncthing' }}"
+syncthing_cfg_file: "{{ syncthing_cfg_dir }}/config.xml"
 sync_dir: "{{ lookup('env', 'HOME') + '/cld' }}"
-syncthing_user: root
-syncthing_cfg_dir: /root/.config/syncthing/
-syncthing_cfg_file: /root/.local/state/syncthing/config.xml

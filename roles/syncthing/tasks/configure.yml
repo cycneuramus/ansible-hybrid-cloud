@@ -18,8 +18,8 @@
   template:
     src: stignore.j2
     dest: "{{ sync_dir }}/.stignore"
-    owner: root
-    group: root
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
     mode: 0600
 
 - name: Configure sync folder
@@ -28,9 +28,9 @@
     xpath: /configuration/folder[@label="Cloud"]
     pretty_print: true
     add_children:
-      # - syncOwnership: "true"
+      - syncOwnership: "true"
       - syncXattrs: "true"
-      - copyOwnershipFromParent: "true"
+      - copyOwnershipFromParent: "false"
 
 - name: Set GUI on home node
   xml:
@@ -61,6 +61,7 @@
 - name: Collect device ids
   command: /usr/bin/syncthing -device-id
   register: device_id
+  become_user: "{{ ansible_user }}"
 
 - name: Remove existing device entries
   xml:
@@ -81,21 +82,19 @@
     owner: root
     group: root
     mode: 0755
-    path: /etc/systemd/system/syncthing@.d
+    path: /etc/systemd/system/syncthing@{{ syncthing_user }}.service.d
     state: directory
-  when: syncthing_user != "root"
 
 - name: Grant service extended capabilities for syncOwnership to work
   become: true
   ini_file:
-    dest: /etc/systemd/system/syncthing@.d/cap_override.conf
+    dest: /etc/systemd/system/syncthing@{{ syncthing_user }}.service.d/override.conf
     owner: root
     group: root
     mode: 0644
     section: Service
     option: AmbientCapabilities
-    value: CAP_CHOWN CAP_FOWNER CAP_DAC_READ_SEARCH
-  when: syncthing_user != "root"
+    value: CAP_CHOWN CAP_FOWNER
 
 - name: Start and enable syncthing service
   become: true
@@ -103,4 +102,5 @@
     name: syncthing@{{ syncthing_user }}
     state: started
     enabled: true
+    daemon_reload: true
   changed_when: false
