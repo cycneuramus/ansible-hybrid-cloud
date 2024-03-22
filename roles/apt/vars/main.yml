@@ -5,6 +5,7 @@ packages_to_install:
     - git
     - htop
     - jq
+    - kitty-terminfo
     - nodejs
     - npm
     - rsync

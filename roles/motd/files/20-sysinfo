@@ -23,7 +23,7 @@ color_value="\033[01;34m"
 uname -snrvm
 printf "\n"
 printf "${color_info}CPU Usage      :${color_value} %s\n" "${cpu_load}"
-if [ -f /sys/class/thermal/thermal_zone0/temp ]; then
+if [ -n "$cpu_temp" ]; then
 	printf "${color_info}CPU Temp       :${color_value} %s\n" "${cpu_temp}"
 fi
 printf "${color_info}Memory Usage   :${color_value} %s\n" "${memory_usage}"

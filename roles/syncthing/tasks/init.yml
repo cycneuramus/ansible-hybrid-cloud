@@ -1,5 +1,5 @@
 - name: Increase inotify limits
-  sysctl: 
+  sysctl:
     name: fs.inotify.max_user_watches
     value: 204800
     state: present
@@ -40,7 +40,7 @@
   file:
     path: "{{ item }}"
     state: absent
-  loop: 
+  loop:
     - "{{ lookup('env', 'HOME') + '/Sync' }}"
     - /root/Sync
 

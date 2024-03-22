@@ -1,6 +1,10 @@
-{% if ( cluster_labels["storage"] == "small") %}
-/nextcloud
-/jellyfin2
+!/gitea
+!/grocy
+!/mailserver
+!/sigurd
+
+{% if ( cluster_labels["storage"] != "small") -%}
+!/nextcloud
 {% endif %}
-(?i)*transcode*
-/.git
+
+*

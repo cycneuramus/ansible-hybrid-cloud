@@ -49,7 +49,7 @@ client {
 {% endif %}
 
 {% set server_ip = [] %}
-{%- for host in ansible_play_batch %}
+{%- for host in groups['servers'] %}
 {%- if host in groups['cluster_managers'] %}
 {{ server_ip.append(hostvars[host].wireguard_ip) }}
 {%- endif %}

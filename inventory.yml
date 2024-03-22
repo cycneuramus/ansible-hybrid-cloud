@@ -6,7 +6,7 @@ all:
         apex:
           arch: amd64
           ansible_host: "{{ host_apex }}"
-          git_branch: homeserver
+          git_branch: apex
           wireguard_ip: 10.10.10.10
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           wireguard_port: 51028
@@ -14,6 +14,7 @@ all:
             performance: high
             datacenter: eso
             ingress: "false"
+            s3: "true"
             storage: large
 
         home:
@@ -28,6 +29,40 @@ all:
             ingress: "false"
             storage: large
 
+        arca:
+          arch: amd64
+          ansible_host: "{{ host_arca }}"
+          wireguard_ip: 10.10.10.12
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: exo
+            s3: "true"
+            ingress: "true"
+            storage: large
+
+        arm:
+          arch: arm64
+          ansible_host: "{{ host_arm }}"
+          wireguard_ip: 10.10.10.13
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: ocl
+            ingress: "true"
+            storage: small
+
+        green:
+          arch: amd64
+          ansible_host: "{{ host_green }}"
+          wireguard_ip: 10.10.10.14
+          wireguard_endpoint: "{{ ansible_host }}"
+          cluster_labels:
+            performance: high
+            datacenter: exo
+            ingress: "true"
+            storage: small
+
         # raspi:
         #   arch: arm64
         #   ansible_host: "{{ host_raspi }}"
@@ -40,47 +75,26 @@ all:
         #     ingress: "false"
         #     storage: small
 
-        vps:
-          arch: amd64
-          ansible_host: "{{ host_vps }}"
-          ansible_port: 4422
-          wireguard_ip: 10.10.10.12
-          wireguard_endpoint: "{{ ansible_host }}"
-          cluster_labels:
-            performance: high
-            datacenter: exo
-            ingress: "true"
-            storage: large
+        # vps:
+        #   arch: amd64
+        #   ansible_host: "{{ host_vps }}"
+        #   ansible_port: 4422
+        #   wireguard_ip: 10.10.10.12
+        #   wireguard_endpoint: "{{ ansible_host }}"
+        #   cluster_labels:
+        #     performance: high
+        #     datacenter: exo
+        #     ingress: "true"
+        #     storage: large
 
-        green:
-          arch: amd64
-          ansible_host: "{{ host_green }}"
-          wireguard_ip: 10.10.10.13
-          wireguard_endpoint: "{{ ansible_host }}"
-          cluster_labels:
-            performance: high
-            datacenter: exo
-            ingress: "true"
-            storage: small
-
-        arm:
-          arch: arm64
-          ansible_host: "{{ host_arm }}"
-          wireguard_ip: 10.10.10.14
-          wireguard_endpoint: "{{ ansible_host }}"
-          cluster_labels:
-            performance: high
-            datacenter: ocl
-            ingress: "true"
-            storage: small
 
     cluster_managers:
       hosts:
         apex:
-        vps:
-        green:
+        arca:
+        arm:
 
     cluster_workers:
       hosts:
         home:
-        arm:
+        green:

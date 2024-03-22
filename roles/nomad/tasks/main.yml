@@ -14,8 +14,12 @@
     name:
       - nomad
 
+- name: Gather the service facts
+  service_facts:
+
 - name: Let Nomad garbage collect
   command: nomad system gc
+  when: "'nomad' in services and services['nomad'].status == 'running'"
 
 - name: Stop nomad
   systemd:
@@ -53,6 +57,7 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "644"
+  notify: restart nomad
 
 - name: Format config file
   command: nomad fmt "{{ nomad_data_dir }}"/nomad.hcl

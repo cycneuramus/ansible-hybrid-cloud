@@ -5,11 +5,10 @@ This Ansible playbook deploys a container orchestration cluster on a group of se
 | **NODE** 	| **ROLE**         	| **DATACENTER** 	|
 |----------	|------------------	|----------------	|
 | apex     	| Manager / Worker 	| 1              	|
-| home     	| Worker			| 1              	|
-| raspi     | Worker			| 1              	|
-| vps      	| Manager / Worker 	| 2              	|
-| green    	| Manger / Worker   | 3              	|
-| arm    	| Worker           	| 4              	|
+| home     	| Worker			      | 1              	|
+| arca      | Manager / Worker 	| 2              	|
+| arm    	  | Manger / Worker   | 3              	|
+| green    	| Worker            | 4              	|
 
 ### Features
 

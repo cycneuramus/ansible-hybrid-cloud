@@ -1,4 +1,4 @@
 sync_dir: "{{ lookup('env', 'HOME') + '/cld' }}"
 syncthing_user: root
 syncthing_cfg_dir: /root/.config/syncthing/
-syncthing_cfg_file: /root/.config/syncthing/config.xml
+syncthing_cfg_file: /root/.local/state/syncthing/config.xml
