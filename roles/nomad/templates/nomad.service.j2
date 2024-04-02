@@ -10,6 +10,10 @@ After=network-online.target
 # should be run as root
 
 ExecReload=/bin/kill -HUP $MAINPID
+{% if rclone_mode == "mount" %}
+ExecStartPre=/bin/bash -c 'while ! mountpoint -q /home/{{ ansible_user }}/mnt/crypt; do sleep 1; done'
+ExecStartPre=/bin/bash -c 'while ! mountpoint -q /home/{{ ansible_user }}/mnt/s3; do sleep 1; done'
+{% endif %}
 ExecStart=/usr/bin/nomad agent -config "{{ nomad_data_dir }}"
 KillMode=process
 KillSignal=SIGINT

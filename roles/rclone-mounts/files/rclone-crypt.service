@@ -1,0 +1,28 @@
+[Unit]
+Description=rclone: Remote FUSE filesystem for cloud storage config %i
+After=network-online.target
+Wants=network-online.target
+AssertPathIsDirectory=%h/mnt/crypt
+
+[Service]
+Type=notify
+ExecStart= \
+  /usr/bin/rclone mount \
+	--allow-other \
+	--gid 1000 \
+	--uid 1000 \
+	--cache-dir %h/.cache/rclone/crypt \
+	--config %h/.config/rclone/rclone.conf \
+	--vfs-cache-mode full \
+	--vfs-cache-max-size 5G \
+	--vfs-cache-max-age 24h \
+	--rc \
+	--rc-no-auth \
+	--rc-addr :5575 \
+	crypt:cld %h/mnt/crypt
+ExecStop=/bin/fusermount -uz %h/mnt/crypt
+RestartSec=5
+Restart=on-failure
+
+[Install]
+WantedBy=default.target

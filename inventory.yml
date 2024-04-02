@@ -49,6 +49,7 @@ all:
           cluster_labels:
             performance: high
             datacenter: ocl
+            s3: "true"
             ingress: "true"
             storage: small
 
@@ -91,10 +92,10 @@ all:
     cluster_managers:
       hosts:
         apex:
-        arca:
         arm:
+        green:
 
     cluster_workers:
       hosts:
+        arca:
         home:
-        green:

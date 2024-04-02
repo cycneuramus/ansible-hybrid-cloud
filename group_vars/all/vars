@@ -1,5 +1,6 @@
 orchestrator: nomad
 protection: crowdsec
+rclone_mode: mount
 storage: syncthing
 vagrant: false
 

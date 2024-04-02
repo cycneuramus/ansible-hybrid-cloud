@@ -54,9 +54,19 @@
     - role: dotfiles
       tags: dotfiles
 
+    - role: rclone-install
+      tags: rclone-install
+
+    - role: rclone-mounts
+      when:
+        - cluster_labels["performance"] == "high"
+        - rclone_mode == "mount"
+      tags: rclone-mounts
+
     - role: rclone-docker-plugin
       when:
         - cluster_labels["performance"] == "high"
+        - rclone_mode == "plugin"
       tags: rclone-docker-plugin
 
     - role: firewall

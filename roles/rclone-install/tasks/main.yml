@@ -1,0 +1,50 @@
+- name: Install dependencies
+  become: true
+  package:
+    name:
+      - fuse3
+      - unzip
+    state: present
+
+- name: Set allow_other in fuse.conf
+  become: true
+  lineinfile:
+    path: /etc/fuse.conf
+    regexp: ^#\s*user_allow_other
+    line: user_allow_other
+
+- name: Check for rclone binary
+  stat:
+    path: /usr/bin/rclone
+  register: rclone_bin
+
+- name: Install rclone
+  when: not rclone_bin.stat.exists
+  block:
+    - name: Check latest stable rclone version number
+      uri:
+        url: https://downloads.rclone.org/version.txt
+        return_content: true
+      register: rclone_latest_version
+
+    - name: Set rclone version fact
+      set_fact:
+        rclone_version: "{{ rclone_latest_version.content | replace('rclone v', '', 1) | trim }}"
+
+    - name: Get rclone stable version
+      unarchive:
+        src: https://downloads.rclone.org/v{{ rclone_version }}/rclone-v{{ rclone_version }}-linux-{{ arch }}.zip
+        dest: /tmp
+        remote_src: true
+        creates: "/tmp/rclone-v{{ rclone_version }}-linux-{{ arch }}"
+
+    - name: Copy rclone binary
+      become: true
+      copy:
+        src: "/tmp/rclone-v{{ rclone_version }}-linux-{{ arch }}/rclone"
+        dest: "/usr/bin/rclone"
+        mode: "0755"
+        owner: root
+        group: root
+        remote_src: true
+

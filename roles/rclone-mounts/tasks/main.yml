@@ -1,0 +1,26 @@
+- name: Deploy rclone mount user services
+  copy:
+    src: "{{ item }}"
+    dest: "{{ lookup('env', 'HOME') + '/.config/systemd/user/' + item }}"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "0644"
+  loop:
+    - rclone-s3.service
+    - rclone-crypt.service
+
+- name: Enable systemd user lingering
+  command: "loginctl enable-linger {{ ansible_user }}"
+
+# - name: Enable and start mount user services
+#   systemd:
+#     name: "{{ item }}"
+#     state: started
+#     enabled: true
+#     daemon_reload: true
+#     scope: user
+#   environment:
+#     XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts.user_uid }}"
+#   loop:
+#     - rclone-s3.service
+#     - rclone-crypt.service

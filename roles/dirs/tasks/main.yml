@@ -9,6 +9,8 @@
       - dl
       - log
       - mnt
+      - mnt/s3
+      - mnt/crypt
 
 - name: Create ingress log directory
   when: cluster_labels["ingress"] == "true"
