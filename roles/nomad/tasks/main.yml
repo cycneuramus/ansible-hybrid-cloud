@@ -21,16 +21,16 @@
   command: nomad system gc
   when: "'nomad' in services and services['nomad'].status == 'running'"
 
-- name: Stop nomad
-  systemd:
-    name: nomad
-    state: stopped
-    daemon_reload: true
-
-- name: Clean out previous configurations
-  file:
-    path: "{{ nomad_data_dir }}"
-    state: absent
+# - name: Stop nomad
+#   systemd:
+#     name: nomad
+#     state: stopped
+#     daemon_reload: true
+#
+# - name: Clean out previous configurations
+#   file:
+#     path: "{{ nomad_data_dir }}"
+#     state: absent
 
 - name: Ensure nomad data directories
   file:

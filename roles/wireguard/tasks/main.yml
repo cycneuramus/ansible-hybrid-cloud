@@ -36,13 +36,14 @@
     owner: root
     group: root
     mode: 0600
+  notify: restart wg-mesh
 
-- name: Disable and stop wg-mesh service
-  systemd:
-    name: wg-quick@wg-mesh.service
-    state: stopped
-    enabled: false
-  changed_when: false
+# - name: Disable and stop wg-mesh service
+#   systemd:
+#     name: wg-quick@wg-mesh.service
+#     state: stopped
+#     enabled: false
+#   changed_when: false
 
 - name: Enable and start wg-mesh service
   systemd:

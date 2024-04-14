@@ -3,7 +3,7 @@ ListenPort={{ wireguard_port }}
 PrivateKey={{ wireguard_private_key['content'] | b64decode }}
 Address={{ wireguard_ip }}
 
-{% for peer in ansible_play_batch %}
+{% for peer in groups['servers'] %}
 {% if peer != inventory_hostname %}
 [Peer] # {{ peer }}
 PublicKey={{ hostvars[peer].wireguard_public_key['content'] | b64decode }}
