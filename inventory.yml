@@ -30,7 +30,7 @@ all:
             storage: large
 
         arca:
-          arch: amd64
+          arch: arm64
           ansible_host: "{{ host_arca }}"
           wireguard_ip: 10.10.10.12
           wireguard_endpoint: "{{ ansible_host }}"
@@ -92,10 +92,10 @@ all:
     cluster_managers:
       hosts:
         apex:
+        arca:
         arm:
-        green:
 
     cluster_workers:
       hosts:
-        arca:
+        green:
         home:

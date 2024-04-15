@@ -32,7 +32,7 @@
     dest: "{{ temp_repo }}"
     separate_git_dir: "{{ local_dotfiles_repo }}"
     single_branch: true
-    version: "{{ git_branch | default('homeserver') }}"
+    version: "{{ git_branch | default(leader_node) }}"
 
 - name: Clone transcrypt repo
   git:

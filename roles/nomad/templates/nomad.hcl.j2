@@ -44,10 +44,6 @@ client {
 		{% endfor %}
 	}
 
-{% if inventory_hostname == "arm" %}
-	cpu_total_compute = 8000
-{% endif %}
-
 {% set server_ip = [] %}
 {%- for host in groups['servers'] %}
 {%- if host in groups['cluster_managers'] %}

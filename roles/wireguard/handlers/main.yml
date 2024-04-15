@@ -1,4 +1,0 @@
-- name: restart wg-mesh
-  systemd:
-    name: wg-quick@wg-mesh.service
-    state: restarted
