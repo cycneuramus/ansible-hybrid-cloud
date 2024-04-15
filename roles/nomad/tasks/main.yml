@@ -1,7 +1,7 @@
 - name: Add GPG key
-  apt_key:
+  get_url:
     url: https://apt.releases.hashicorp.com/gpg
-    state: present
+    dest: /etc/apt/trusted.gpg.d/nomad.asc
 
 - name: Add hashicorp repository
   apt_repository:

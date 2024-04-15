@@ -8,9 +8,9 @@
 
 - name: Import syncthing GPG key to apt
   become: true
-  apt_key:
-    url: 'https://syncthing.net/release-key.txt'
-    state: present
+  get_url:
+    url: https://syncthing.net/release-key.txt
+    dest: /etc/apt/trusted.gpg.d/syncthing.asc
 
 - name: Add syncthing repository
   become: true

@@ -24,9 +24,9 @@
     enabled: true
 
 - name: Add GPG key
-  apt_key:
+  get_url:
     url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
-    state: present
+    dest: /etc/apt/trusted.gpg.d/crowdsec.asc
 
 - name: Add Crowdsec repository
   apt_repository:
