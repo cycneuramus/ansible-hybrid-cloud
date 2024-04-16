@@ -27,6 +27,11 @@
         PermitRootLogin prohibit-password
         PasswordAuthentication yes
 
+- name: Set up notification on untrusted IP ssh login
+  lineinfile:
+    dest: /etc/pam.d/sshd
+    line: "session    optional     pam_exec.so /home/{{ ansible_user }}/bin/ssh-notify.sh"
+
 - name: Restart ssh daemon
   service:
     name: ssh
