@@ -31,6 +31,7 @@
   lineinfile:
     dest: /etc/pam.d/sshd
     line: "session    optional     pam_exec.so /home/{{ ansible_user }}/bin/ssh-notify.sh"
+  when: cluster_labels["datacenter"] != "eso"
 
 - name: Restart ssh daemon
   service:

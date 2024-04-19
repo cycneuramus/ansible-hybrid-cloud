@@ -48,6 +48,14 @@
     - 172.16.0.0/12
     - 192.168.0.0/16
 
+- name: Allow traffic from Wireguard mesh
+  become: true
+  ufw:
+    rule: allow
+    direction: in
+    interface: wg-mesh
+    src: 10.10.10.0/24
+
 - name: Allow ingress ports on relevant nodes
   ufw:
     rule: allow
