@@ -17,10 +17,9 @@ all:
             s3: "true"
             storage: large
 
-        home:
+        horreum:
           arch: amd64
-          ansible_host: "{{ host_home }}"
-          git_branch: homeserver
+          ansible_host: "{{ host_horreum }}"
           wireguard_ip: 10.10.10.11
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
@@ -98,4 +97,4 @@ all:
     cluster_workers:
       hosts:
         green:
-        home:
+        horreum:
