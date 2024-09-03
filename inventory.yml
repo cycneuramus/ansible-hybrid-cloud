@@ -48,17 +48,6 @@ all:
             ingress: "true"
             storage: small
 
-        green:
-          arch: amd64
-          ansible_host: "{{ host_green }}"
-          wireguard_ip: 10.10.10.14
-          wireguard_endpoint: "{{ ansible_host }}"
-          cluster_labels:
-            datacenter: exo
-            ingress: "true"
-            storage: small
-
-
     cluster_managers:
       hosts:
         apex:
@@ -67,5 +56,4 @@ all:
 
     cluster_workers:
       hosts:
-        green:
         horreum:
