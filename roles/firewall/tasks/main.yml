@@ -69,12 +69,3 @@
     - 993 # mail
     - 37663 # mc
   when: cluster_labels["ingress"] == "true"
-
-- name: Allow vps specific ports
-  ufw:
-    rule: allow
-    port: "{{ item }}"
-  loop:
-    - 4422
-    - 51280
-  when: inventory_hostname == "vps"
