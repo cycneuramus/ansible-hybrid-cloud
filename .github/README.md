@@ -15,7 +15,7 @@ This Ansible playbook deploys a container orchestration cluster on a group of se
 + **Encryption**: Cluster nodes communicate exclusively over a private [Wireguard](https://www.wireguard.com/) mesh network
 + **Security**: [CrowdSec](https://www.crowdsec.net/) (default) or [Fail2ban](https://www.fail2ban.org/); reasonably hardened `ssh` config; unattended upgrades
 + **Need-to-know**: Service ports (`HTTPS`, `IMAP`, `DoT`, etc.) are open on ingress nodes only; all requests get reverse-proxied to services over the encrypted mesh network
-+ **Cloud storage**: [Rclone](https://rclone.org/) as a [Docker volume plugin](https://rclone.org/docker/) for mounting almost any cloud storage as a storage backend for services
++ **Cloud storage**: [Rclone](https://rclone.org/) as a [Docker volume plugin](https://rclone.org/docker/) or systemd-managed [FUSE mounts](https://rclone.org/commands/rclone_mount) (default) for using almost any cloud storage as a storage backend for services
 + **Distributed storage**: [GlusterFS](https://www.gluster.org/) or [Syncthing](https://syncthing.net/) (default)
 
 ---
