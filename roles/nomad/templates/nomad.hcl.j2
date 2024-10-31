@@ -71,6 +71,7 @@ server {
 		retry_join = [ {{ '\"' + server_ip | join('\", \"') + '\"' }} ]
 	}
 
+	heartbeat_grace = "1m"
 	# job_gc_threshold = "5m"
 }
 {% endif %}
