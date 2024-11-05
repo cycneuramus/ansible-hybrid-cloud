@@ -3,8 +3,8 @@ region = "global"
 datacenter = "dc1"
 
 advertise {
-{% if "{{ inventory_hostname }}" == "{{ leader_node }}" %}
-	http = "0.0.0.0"
+{% if "{{ cluster_labels["datacenter"] }}" == "eso" %}
+	http = "{{ ansible_host }}"
 {% else %}
 	http = "{{ wireguard_ip }}"
 {% endif %}

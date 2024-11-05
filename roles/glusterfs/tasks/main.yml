@@ -1,14 +1,33 @@
-- name: Install glusterfs
-  include_role:
-    name: geerlingguy.glusterfs
-  vars:
-    glusterfs_ppa_version: "9"
+- name: Ensure dependencies are installed.
+  apt:
+    name:
+      - gnupg2
+      - apt-transport-https
+      - ca-certificates
+    state: present
+
+- name: Import GlusterFS GPG key
+  apt_key:
+    url: "http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub"
+
+- name: Enable GlusterFS apt repository
+  apt_repository:
+    repo: "deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/{{ ansible_distribution_release }}/apt/ {{ ansible_distribution_release }} main"
+    state: present
+    update_cache: true
+
+- name: Ensure GlusterFS is installed
+  apt:
+    name:
+      - glusterfs-server
+      - glusterfs-client
+    state: installed
 
 - name: Set cluster ip adresses
   set_fact:
     cluster: |
       {% for host in ansible_play_batch -%}
-      {{ hostvars[host]['wireguard_ip'] }}{% if not loop.last %},{% endif %}
+      {{ hostvars[host]['ansible_host'] }}{% if not loop.last %},{% endif %}
       {%- endfor %}
   run_once: true
 
@@ -28,24 +47,28 @@
     state: present
     name: "{{ gluster_brick_name }}"
     brick: "{{ gluster_brick_dir }}"
-    replicas: 3
+    replicas: "{{ gluster_replica_count }}"
     cluster: "{{ cluster | trim }}"
-    host: "{{ wireguard_ip }}"
+    host: "{{ ansible_host }}"
     force: true
+    start_on_create: true
     options:
-      { group: "metadata-cache",
-        features.cache-invalidation: "on",
-        performance.cache-invalidation: "on",
+      {
         cache-invalidation-timeout: "600",
-        performance.cache-max-file-size: "10MB",
-        performance.cache-size: "256MB",
-        performance.qr-cache-timeout: "600",
-        performance.stat-prefetch: "on",
-        performance.io-thread-count: "64",
+        cache-size: "5GB",
         client.event-threads: "4",
+        cluster.lookup-optimize: "on",
+        features.cache-invalidation: "on",
+        group: "metadata-cache",
+        performance.cache-invalidation: "on",
+        performance.cache-max-file-size: "10MB",
+        performance.io-thread-count: "64",
+        performance.parallel-readdir: "on",
+        performance.qr-cache-timeout: "600",
+        performance.readdir-ahead: "on",
+        performance.stat-prefetch: "on",
         server.event-threads: "4",
         server.outstanding-rpc-limit: "128",
-        cluster.lookup-optimize: "on",
       }
   run_once: true
 

@@ -2,58 +2,41 @@ all:
   children:
     servers:
       hosts:
-
         apex:
           arch: amd64
           ansible_host: "{{ host_apex }}"
-          git_branch: apex
           wireguard_ip: 10.10.10.10
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
-          wireguard_port: 51028
           cluster_labels:
             datacenter: eso
-            ingress: "false"
+            ingress: "true"
             s3: "true"
+            gluster: "true"
             storage: large
-
-        horreum:
+        ambi:
           arch: amd64
-          ansible_host: "{{ host_horreum }}"
+          ansible_host: "{{ host_ambi }}"
           wireguard_ip: 10.10.10.11
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
             datacenter: eso
-            ingress: "false"
+            ingress: "true"
+            s3: "true"
+            gluster: "true"
             storage: large
-
         arca:
           arch: arm64
           ansible_host: "{{ host_arca }}"
           wireguard_ip: 10.10.10.12
-          wireguard_endpoint: "{{ ansible_host }}"
+          wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
-            datacenter: exo
-            s3: "true"
+            datacenter: eso
             ingress: "true"
+            s3: "true"
+            gluster: "true"
             storage: large
-
-        arm:
-          arch: arm64
-          ansible_host: "{{ host_arm }}"
-          wireguard_ip: 10.10.10.13
-          wireguard_endpoint: "{{ ansible_host }}"
-          cluster_labels:
-            datacenter: ocl
-            s3: "true"
-            ingress: "true"
-            storage: small
-
     cluster_managers:
       hosts:
         apex:
+        ambi:
         arca:
-        arm:
-
-    cluster_workers:
-      hosts:
-        horreum:

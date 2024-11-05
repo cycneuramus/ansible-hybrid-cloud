@@ -1,7 +1,7 @@
 orchestrator: nomad
 protection: crowdsec
 rclone_mode: mount
-storage: syncthing
+storage: glusterfs
 vagrant: false
 
 ansible_port: 22
@@ -9,9 +9,8 @@ ansible_user: "{{ vault_user }}"
 new_user: "{{ vault_new_user }}"
 new_user_uid: "{{ vault_new_user_uid }}"
 new_user_pass: "{{ vault_new_user_pass }}"
-host_arm: "{{ vault_host_arm }}"
 host_apex: "{{ vault_host_apex }}"
-host_horreum: "{{ vault_host_horreum }}"
+host_ambi: "{{ vault_host_ambi }}"
 host_arca: "{{ vault_host_arca }}"
 leader_node: "apex"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
