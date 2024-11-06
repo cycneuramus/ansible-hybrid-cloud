@@ -1,27 +1,9 @@
-- name: Ensure dependencies are installed.
-  apt:
-    name:
-      - gnupg2
-      - apt-transport-https
-      - ca-certificates
-    state: present
-
-- name: Import GlusterFS GPG key
-  apt_key:
-    url: "http://download.gluster.org/pub/gluster/glusterfs/LATEST/rsa.pub"
-
-- name: Enable GlusterFS apt repository
-  apt_repository:
-    repo: "deb http://download.gluster.org/pub/gluster/glusterfs/LATEST/Debian/{{ ansible_distribution_release }}/apt/ {{ ansible_distribution_release }} main"
-    state: present
-    update_cache: true
-
 - name: Ensure GlusterFS is installed
   apt:
     name:
       - glusterfs-server
       - glusterfs-client
-    state: installed
+    state: present
 
 - name: Set cluster ip adresses
   set_fact:
@@ -42,6 +24,23 @@
     - "{{ gluster_brick_path }}"
     - "{{ gluster_mount_path }}"
 
+- name: Enable and start GlusterFS daemon
+  systemd:
+    name: glusterd
+    state: started
+    enabled: true
+
+- name: Form a cluster
+  command: "gluster peer probe {{ peernode }}"
+  loop: "{{ ansible_play_batch | flatten(levels=1) }}"
+  loop_control:
+    loop_var: peernode
+    pause: 2
+  register: probe
+  run_once: true
+  any_errors_fatal: true
+  changed_when: "'peer probe: success.' in probe.stdout_lines"
+
 - name: Configure gluster volume
   gluster_volume:
     state: present
@@ -55,18 +54,23 @@
     options:
       {
         cache-invalidation-timeout: "600",
-        cache-size: "5GB",
+        cache-size: "512MB",
         client.event-threads: "4",
         cluster.lookup-optimize: "on",
         features.cache-invalidation: "on",
         group: "metadata-cache",
+        group: "nl-cache",
+        nl-cache-positive-entry: "on",
         performance.cache-invalidation: "on",
         performance.cache-max-file-size: "10MB",
-        performance.io-thread-count: "64",
+        performance.io-cache: "on",
+        performance.io-thread-count: "32",
         performance.parallel-readdir: "on",
         performance.qr-cache-timeout: "600",
+        performance.read-ahead: "on",
         performance.readdir-ahead: "on",
         performance.stat-prefetch: "on",
+        performance.write-behind: "on",
         server.event-threads: "4",
         server.outstanding-rpc-limit: "128",
       }

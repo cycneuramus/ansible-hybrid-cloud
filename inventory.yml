@@ -25,10 +25,10 @@ all:
             s3: "true"
             gluster: "true"
             storage: large
-            nas: "true"
-        arca:
+            nas: "false"
+        horreum:
           arch: arm64
-          ansible_host: "{{ host_arca }}"
+          ansible_host: "{{ host_horreum }}"
           wireguard_ip: 10.10.10.12
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
@@ -37,7 +37,7 @@ all:
             s3: "true"
             gluster: "true"
             storage: large
-            nas: "false"
+            nas: "true"
     cluster_managers:
       hosts:
         apex:

@@ -106,7 +106,10 @@
 
     - role: glusterfs
       become: true
-      when: storage == "glusterfs"
+      when:
+        - storage == "glusterfs"
+        - cluster_labels["gluster"] == "true"
+
       tags:
         - glusterfs
         - cluster

@@ -11,9 +11,9 @@ new_user_uid: "{{ vault_new_user_uid }}"
 new_user_pass: "{{ vault_new_user_pass }}"
 host_apex: "{{ vault_host_apex }}"
 host_ambi: "{{ vault_host_ambi }}"
-host_arca: "{{ vault_host_arca }}"
+host_horreum: "{{ vault_host_horreum }}"
 leader_node: "apex"
-nas_node: "ambi"
+nas_node: "horreum"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
 
