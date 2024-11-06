@@ -20,12 +20,12 @@ acquis_addons: |
     type: journald
   ---
   filenames:
-    - {{ lookup('env', 'HOME') + '/log/caddy/access.log' }}
+    - {{ ansible_env.HOME }}/log/caddy/access.log
   labels:
     type: caddy
   ---
   filenames:
-    - {{ lookup('env', 'HOME') + '/log/mail/mail.log' }}
+    - {{ ansible_env.HOME }}/log/mail/mail.log
   labels:
     type: syslog
   ---

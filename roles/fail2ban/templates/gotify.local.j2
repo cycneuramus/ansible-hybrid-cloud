@@ -1,4 +1,4 @@
 [Definition]
 
 norestored = true
-actionban = "{{ lookup('env', 'HOME') + '/bin/fail2ban-action.sh' }}" <ip> <name>
+actionban = "{{ ansible_env.HOME }}/bin/fail2ban-action.sh" <ip> <name>

@@ -34,7 +34,7 @@
 
 - name: Sync local nvim config to remotes
   copy:
-    src: "{{ lookup('env', 'HOME') + '/.config/nvim' }}"
-    dest: "{{ lookup('env', 'HOME') + '/.config' }}"
+    src: "{{ ansible_env.HOME }}/.config/nvim"
+    dest: "{{ ansible_env.HOME }}/.config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"

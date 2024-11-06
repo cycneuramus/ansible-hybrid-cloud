@@ -18,8 +18,8 @@
     state: directory
     mode: "0755"
   with_items:
-    - "{{ lookup('env', 'HOME') + '/.config/rclone' }}"
-    - "{{ lookup('env', 'HOME') + '/.cache/rclone/docker' }}"
+    - "{{ ansible_env.HOME }}/.config/rclone"
+    - "{{ ansible_env.HOME }}/.cache/rclone/docker"
 
 - name: Clear out previous plugin
   community.docker.docker_plugin:
@@ -36,8 +36,8 @@
     alias: rclone
     state: present
     plugin_options:
-      config: "{{ lookup('env', 'HOME') + '/.config/rclone' }}"
-      cache: "{{ lookup('env', 'HOME') + '/.cache/rclone/docker' }}"
+      config: "{{ ansible_env.HOME }}/.config/rclone"
+      cache: "{{ ansible_env.HOME }}/.cache/rclone/docker"
       args: "--allow-other --vfs-cache-mode=full --vfs-cache-max-size=5G"
 
 - name: Enable plugin

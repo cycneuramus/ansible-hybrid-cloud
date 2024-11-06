@@ -13,7 +13,7 @@ action = ufw
 enabled = true
 port = http,https
 filter = caddy
-logpath = {{ lookup('env', 'HOME') + '/log/access.log' }}
+logpath = {{ ansible_env.HOME }}/log/access.log
 
 [sshd]
 enabled = true
@@ -25,14 +25,14 @@ action = ufw
 [dovecot]
 enabled = true
 port = pop3,pop3s,imap,imaps,submission,465,sieve
-logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+logpath = {{ ansible_env.HOME }}/cld/mailserver/data/mail-logs/mail.log
 
 [postfix]
 enabled = true
 port = smtp,465,submission
-logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+logpath = {{ ansible_env.HOME }}/cld/mailserver/data/mail-logs/mail.log
 
 [postfix-sasl]
 enabled = true
 port = smtp,465,submission
-logpath = {{ lookup('env', 'HOME') + '/cld/mailserver/data/mail-logs/mail.log' }}
+logpath = {{ ansible_env.HOME }}/cld/mailserver/data/mail-logs/mail.log

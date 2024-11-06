@@ -1,7 +1,7 @@
 - name: Deploy rclone mount user services
   copy:
     src: "{{ item }}"
-    dest: "{{ lookup('env', 'HOME') + '/.config/systemd/user/' + item }}"
+    dest: "{{ ansible_env.HOME }}/.config/systemd/user/{{ item }}"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: "0644"

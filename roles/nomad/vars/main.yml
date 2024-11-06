@@ -1,1 +1,1 @@
-nomad_data_dir: "{{ lookup('env', 'HOME') + '/.local/share/nomad' }}"
+nomad_data_dir: "{{ ansible_env.HOME }}/.local/share/nomad"

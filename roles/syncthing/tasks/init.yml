@@ -41,7 +41,7 @@
     path: "{{ item }}"
     state: absent
   loop:
-    - "{{ lookup('env', 'HOME') + '/Sync' }}"
+    - "{{ ansible_env.HOME }}/Sync"
     - /root/Sync
 
 - name: Ensure desired sync folder is present

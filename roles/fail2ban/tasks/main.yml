@@ -20,7 +20,7 @@
 
 - name: Ensure caddy log file
   file:
-    path: "{{ lookup('env', 'HOME') + '/log/access.log' }}"
+    path: "{{ ansible_env.HOME }}/log/access.log"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     state: touch
@@ -44,7 +44,7 @@
 
 - name: Ensure $HOME/bin
   file:
-    path: "{{ lookup('env', 'HOME') + '/bin' }}"
+    path: "{{ ansible_env.HOME }}/bin"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     state: directory
@@ -53,7 +53,7 @@
 - name: Copy action notifier to $HOME/bin
   template:
     src: fail2ban-action.sh.j2
-    dest: "{{ lookup('env', 'HOME') + '/bin/fail2ban-action.sh' }}"
+    dest: "{{ ansible_env.HOME }}/bin/fail2ban-action.sh"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: 0755

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-. "{{ lookup('env', 'HOME') + '/bin/secrets' }}"
-. "{{ lookup('env', 'HOME') + '/bin/functions.sh' }}"
+. "{{ ansible_env.HOME }}/bin/secrets"
+. "{{ ansible_env.HOME }}/bin/functions.sh"
 
 ip="$1"
 jail="$2"

@@ -59,8 +59,8 @@
 
 - name: Deploy dotfiles
   synchronize:
-    src: "{{ lookup('env', 'HOME') }}/{{ temp_repo }}/"
-    dest: "{{ lookup('env', 'HOME') }}/"
+    src: "{{ ansible_env.HOME }}/{{ temp_repo }}/"
+    dest: "{{ ansible_env.HOME }}/"
     recursive: true
     rsync_opts:
       - "--verbose"
