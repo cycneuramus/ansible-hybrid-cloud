@@ -1,14 +1,21 @@
-- name: Configure rclone mounts
-  include_tasks: rclone.yml
-  when:
-    - storage != "glusterfs"
-    - rclone_mode == "mount"
-
 - name: Configure nas mounts
   include_tasks: nas.yml
   when:
     - cluster_labels["nas"] != "true"
     - cluster_labels["datacenter"] == "eso"
+
+- name: Configure glusterfs mounts
+  include_tasks: glusterfs.yml
+  when:
+    - storage == "glusterfs"
+    - cluster_labels["gluster"] == "true"
+    - cluster_labels["datacenter"] == "eso"
+
+- name: Configure rclone mounts
+  include_tasks: rclone.yml
+  when:
+    - storage != "glusterfs"
+    - rclone_mode == "mount"
 
 # - name: Enable and start mount user services
 #   systemd:

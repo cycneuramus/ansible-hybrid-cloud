@@ -39,14 +39,14 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
   loop:
-    - "{{ gluster_brick_dir }}"
-    - "{{ gluster_mount_dir }}"
+    - "{{ gluster_brick_path }}"
+    - "{{ gluster_mount_path }}"
 
 - name: Configure gluster volume
   gluster_volume:
     state: present
     name: "{{ gluster_brick_name }}"
-    brick: "{{ gluster_brick_dir }}"
+    brick: "{{ gluster_brick_path }}"
     replicas: "{{ gluster_replica_count }}"
     cluster: "{{ cluster | trim }}"
     host: "{{ ansible_host }}"
@@ -71,11 +71,3 @@
         server.outstanding-rpc-limit: "128",
       }
   run_once: true
-
-- name: Ensure gluster volume is mounted
-  mount:
-    name: "{{ gluster_mount_dir }}"
-    src: "localhost:/{{ gluster_brick_name }}"
-    fstype: glusterfs
-    opts: "defaults,_netdev"
-    state: mounted

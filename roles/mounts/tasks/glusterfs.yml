@@ -1,0 +1,13 @@
+- name: Deploy glusterfs mount service
+  template:
+    src: nas.mount.j2
+    dest: /etc/systemd/system/home-{{ "ansible_user" }}-mnt-nas.mount
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Enable glusterfs mount service
+  systemd:
+    name: "home-{{ ansible_user }}-mnt-nas.mount"
+    enabled: true
+    daemon_reload: true

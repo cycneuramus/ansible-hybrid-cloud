@@ -1,0 +1,16 @@
+[Unit]
+Description=Mount GlusterFS volume
+After=network-online.target
+Wants=network-online.target
+AssertPathIsDirectory={{ gluster_mount_path }}
+StartLimitIntervalSec=120
+StartLimitBurst=6
+
+[Mount]
+What=localhost:/{{ gluster_brick_name }}
+Where={{ gluster_mount_path }}
+Type=glusterfs
+TimeoutSec=10
+
+[Install]
+WantedBy=default.target

@@ -57,9 +57,6 @@
     - role: rclone-install
       tags: rclone-install
 
-    - role: mounts
-      tags: mounts
-
     - role: rclone-docker-plugin
       when:
         - rclone_mode == "plugin"
@@ -113,6 +110,9 @@
       tags:
         - glusterfs
         - cluster
+
+    - role: mounts
+      tags: mounts
 
     - role: swarm
       when: orchestrator == "swarm"

@@ -16,3 +16,8 @@ leader_node: "apex"
 nas_node: "ambi"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
+
+gluster_mount_path: "{{ lookup('env', 'HOME') + '/mnt/gluster' }}"
+gluster_brick_path: "{{ lookup('env', 'HOME') + '/.local/share/gluster/brick1' }}"
+gluster_brick_name: cld
+gluster_replica_count: 3
