@@ -13,5 +13,6 @@ host_apex: "{{ vault_host_apex }}"
 host_ambi: "{{ vault_host_ambi }}"
 host_arca: "{{ vault_host_arca }}"
 leader_node: "apex"
+nas_node: "ambi"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820

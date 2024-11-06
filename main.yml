@@ -57,11 +57,8 @@
     - role: rclone-install
       tags: rclone-install
 
-    - role: rclone-mounts
-      when:
-        - rclone_mode == "mount"
-        - storage != "glusterfs"
-      tags: rclone-mounts
+    - role: mounts
+      tags: mounts
 
     - role: rclone-docker-plugin
       when:

@@ -1,0 +1,24 @@
+- name: Configure rclone mounts
+  include_tasks: rclone.yml
+  when:
+    - storage != "glusterfs"
+    - rclone_mode == "mount"
+
+- name: Configure nas mounts
+  include_tasks: nas.yml
+  when:
+    - cluster_labels["nas"] != "true"
+    - cluster_labels["datacenter"] == "eso"
+
+# - name: Enable and start mount user services
+#   systemd:
+#     name: "{{ item }}"
+#     state: started
+#     enabled: true
+#     daemon_reload: true
+#     scope: user
+#   environment:
+#     XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts.user_uid }}"
+#   loop:
+#     - rclone-s3.service
+#     - rclone-crypt.service

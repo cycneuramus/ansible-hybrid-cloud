@@ -1,0 +1,17 @@
+[Unit]
+Description=Mount NFS Share
+After=network-online.target
+Wants=network-online.target
+AssertPathIsDirectory=/home/{{ ansible_user }}/mnt/nas
+StartLimitIntervalSec=120
+StartLimitBurst=6
+
+[Mount]
+What={{ hostvars[nas_node].ansible_host }}:/home/{{ ansible_user }}/mnt/nas
+Where=/home/{{ ansible_user }}/mnt/nas
+Type=nfs
+Options=vers=3,noatime
+TimeoutSec=10
+
+[Install]
+WantedBy=default.target

@@ -13,6 +13,7 @@ all:
             s3: "true"
             gluster: "true"
             storage: large
+            nas: "false"
         ambi:
           arch: amd64
           ansible_host: "{{ host_ambi }}"
@@ -24,6 +25,7 @@ all:
             s3: "true"
             gluster: "true"
             storage: large
+            nas: "true"
         arca:
           arch: arm64
           ansible_host: "{{ host_arca }}"
@@ -35,6 +37,7 @@ all:
             s3: "true"
             gluster: "true"
             storage: large
+            nas: "false"
     cluster_managers:
       hosts:
         apex:
