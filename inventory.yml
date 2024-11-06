@@ -12,7 +12,6 @@ all:
             ingress: "true"
             s3: "true"
             gluster: "true"
-            storage: large
             nas: "false"
         ambi:
           arch: amd64
@@ -24,10 +23,9 @@ all:
             ingress: "true"
             s3: "true"
             gluster: "true"
-            storage: large
             nas: "false"
         horreum:
-          arch: arm64
+          arch: amd64
           ansible_host: "{{ host_horreum }}"
           wireguard_ip: 10.10.10.12
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
@@ -36,10 +34,9 @@ all:
             ingress: "true"
             s3: "true"
             gluster: "true"
-            storage: large
             nas: "true"
     cluster_managers:
       hosts:
         apex:
         ambi:
-        arca:
+        horreum:
