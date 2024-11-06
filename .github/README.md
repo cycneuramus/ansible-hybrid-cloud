@@ -1,3 +1,10 @@
+```
+python -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+venv/bin/ansible-galaxy collection install -r requirements.yml
+```
+
 ## Overview
 
 This Ansible playbook deploys a container orchestration cluster on a group of servers distributed over several data centers. In this particular setup, the assumption on infrastructure is:
