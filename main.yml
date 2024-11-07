@@ -109,7 +109,6 @@
       when:
         - storage == "glusterfs"
         - cluster_labels["gluster"] == "true"
-
       tags:
         - glusterfs
         - cluster

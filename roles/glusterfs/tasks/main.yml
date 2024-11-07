@@ -13,6 +13,15 @@
       {%- endfor %}
   run_once: true
 
+# Explicit check since if gluster brick already exists, and contains root-owned paths, dir creation below might fail
+- name: Check if gluster brick and mount directories exist
+  stat:
+    path: "{{ item }}"
+  loop:
+    - "{{ gluster_brick_path }}"
+    - "{{ gluster_mount_path }}"
+  register: dir_status
+
 - name: Ensure gluster brick and mount directories
   file:
     path: "{{ item }}"
@@ -20,9 +29,8 @@
     mode: "0775"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
-  loop:
-    - "{{ gluster_brick_path }}"
-    - "{{ gluster_mount_path }}"
+  loop: "{{ dir_status.results }}"
+  when: not item.stat.exists
 
 - name: Enable and start GlusterFS daemon
   systemd:
@@ -55,7 +63,7 @@
       {
         cache-invalidation-timeout: "600",
         cache-size: "512MB",
-        client.event-threads: "4",
+        client.event-threads: "8",
         cluster.lookup-optimize: "on",
         features.cache-invalidation: "on",
         group: "metadata-cache",
@@ -71,7 +79,8 @@
         performance.readdir-ahead: "on",
         performance.stat-prefetch: "on",
         performance.write-behind: "on",
-        server.event-threads: "4",
-        server.outstanding-rpc-limit: "128",
+        performance.write-behind-window-size: "8MB",
+        server.event-threads: "8",
+        server.outstanding-rpc-limit: "32",
       }
   run_once: true
