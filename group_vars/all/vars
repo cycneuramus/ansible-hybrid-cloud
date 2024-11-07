@@ -17,6 +17,7 @@ nas_node: "horreum"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
 
+nas_mount_path: "{{ ansible_env.HOME }}/mnt/nas"
 gluster_mount_path: "{{ ansible_env.HOME }}/mnt/gluster"
 gluster_brick_path: "{{ ansible_env.HOME }}/.local/share/gluster/brick1"
 gluster_brick_name: cld

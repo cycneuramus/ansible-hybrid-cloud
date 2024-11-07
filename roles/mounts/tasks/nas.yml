@@ -1,7 +1,15 @@
+- name: Ensure nas mount directory
+  file:
+    path: "{{ nas_mount_path }}"
+    state: directory
+    mode: "0775"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+
 - name: Deploy nas mount service
   template:
     src: nas.mount.j2
-    dest: /etc/systemd/system/home-{{ "ansible_user" }}-mnt-nas.mount
+    dest: "/etc/systemd/system/home-{{ ansible_user }}-mnt-nas.mount"
     owner: root
     group: root
     mode: "0644"

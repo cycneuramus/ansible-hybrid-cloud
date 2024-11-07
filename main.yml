@@ -115,6 +115,7 @@
         - cluster
 
     - role: mounts
+      become: true
       tags: mounts
 
     - role: swarm
