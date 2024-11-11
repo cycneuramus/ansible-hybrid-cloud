@@ -1,8 +1,8 @@
 [Unit]
-Description=rclone: Remote FUSE filesystem for cloud storage config %i
+Description=rclone: Remote FUSE filesystem for cloud storage config
 After=network-online.target
 Wants=network-online.target
-AssertPathIsDirectory=%h/mnt/s3
+AssertPathIsDirectory={{ s3_mount_path }}
 
 [Service]
 Type=notify
@@ -11,8 +11,8 @@ ExecStart= \
 	--allow-other \
 	--gid 1000 \
 	--uid 1000 \
-	--cache-dir %h/.cache/rclone/s3 \
-	--config %h/.config/rclone/rclone.conf \
+	--cache-dir "{{ ansible_env.HOME }}/.cache/rclone/s3" \
+	--config "{{ ansible_env.HOME }}/.config/rclone/rclone.conf" \
 	--vfs-cache-mode full \
 	--vfs-cache-max-size 5G \
 	--vfs-cache-max-age 8760h \
@@ -21,8 +21,8 @@ ExecStart= \
 	--rc \
 	--rc-no-auth \
 	--rc-addr :5576 \
-	s3:cld %h/mnt/s3
-ExecStop=/bin/fusermount -uz %h/mnt/s3
+	s3:cld {{ s3_mount_path }}
+ExecStop=/bin/fusermount -uz {{ s3_mount_path }}
 RestartSec=5
 Restart=on-failure
 

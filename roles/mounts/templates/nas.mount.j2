@@ -2,13 +2,13 @@
 Description=Mount NFS Share
 After=network-online.target
 Wants=network-online.target
-AssertPathIsDirectory=/home/{{ ansible_user }}/mnt/nas
+AssertPathIsDirectory={{ nas_mount_path }}
 StartLimitIntervalSec=120
 StartLimitBurst=6
 
 [Mount]
-What={{ hostvars[nas_node].ansible_host }}:/home/{{ ansible_user }}/mnt/nas
-Where=/home/{{ ansible_user }}/mnt/nas
+What={{ hostvars[nas_node].ansible_host }}:{{ nas_mount_path }}
+Where={{ nas_mount_path }}
 Type=nfs
 Options=vers=3,noatime
 TimeoutSec=10

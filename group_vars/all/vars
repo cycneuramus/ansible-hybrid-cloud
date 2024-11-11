@@ -1,7 +1,7 @@
 orchestrator: nomad
 protection: crowdsec
 rclone_mode: mount
-storage: glusterfs
+storage: syncthing
 vagrant: false
 
 ansible_port: 22
@@ -17,8 +17,10 @@ nas_node: "horreum"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
 
-nas_mount_path: "{{ ansible_env.HOME }}/mnt/nas"
-gluster_mount_path: "{{ ansible_env.HOME }}/mnt/gluster"
+nas_mount_path: "/mnt/nas"
+s3_mount_path: "/mnt/s3"
+crypt_mount_path: "/mnt/crypt"
+gluster_mount_path: "/mnt/gluster"
 gluster_brick_path: "{{ ansible_env.HOME }}/.local/share/gluster/brick1"
 gluster_brick_name: cld
 gluster_replica_count: 3

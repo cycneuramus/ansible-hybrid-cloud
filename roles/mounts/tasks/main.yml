@@ -3,6 +3,7 @@
   when:
     - cluster_labels["nas"] != "true"
     - cluster_labels["datacenter"] == "eso"
+    - cluster_labels["nas"] == "false"
 
 - name: Configure glusterfs mounts
   include_tasks: glusterfs.yml

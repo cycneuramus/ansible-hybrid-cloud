@@ -1,14 +1,30 @@
-- name: Deploy rclone mount user services
-  copy:
-    src: "{{ item }}"
-    dest: "{{ ansible_env.HOME }}/.config/systemd/user/{{ item }}"
+- name: Ensure rclone mount directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    mode: "0775"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
+  loop:
+    - "{{ s3_mount_path }}"
+    - "{{ crypt_mount_path }}"
+
+- name: Deploy rclone mount services
+  template:
+    src: "{{ item }}.j2"
+    dest: "/etc/systemd/system/{{ item }}"
+    owner: root
+    group: root
     mode: "0644"
   loop:
     - rclone-s3.service
     - rclone-crypt.service
 
-- name: Enable systemd user lingering
-  command: "loginctl enable-linger {{ ansible_user }}"
-
+- name: Enable rclone mount services
+  systemd:
+    name: "{{ item }}"
+    enabled: true
+    daemon_reload: true
+  loop:
+    - rclone-s3.service
+    - rclone-crypt.service
