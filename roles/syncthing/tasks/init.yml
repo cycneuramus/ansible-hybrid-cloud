@@ -1,7 +1,7 @@
 - name: Increase inotify limits
   sysctl:
     name: fs.inotify.max_user_watches
-    value: 204800
+    value: 409600
     state: present
     reload: yes
 
