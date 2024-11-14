@@ -1,7 +1,7 @@
 orchestrator: nomad
 protection: crowdsec
 rclone_mode: mount
-storage: syncthing
+storage: juicefs
 vagrant: false
 
 ansible_port: 22

@@ -1,0 +1,24 @@
+- name: Set facts
+  set_fact:
+    jfs_pkg: /tmp/juicefs-ce.tar.gz
+    jfs_bin_dir: /usr/local/bin
+
+- name: Get latest release data from GitHub API
+  uri:
+    url: https://api.github.com/repos/juicedata/juicefs/releases/latest
+    return_content: true
+  register: release_data
+
+- name: Set latest tag fact
+  set_fact:
+    latest_tag: "{{ release_data.json.tag_name | regex_replace('^v', '') }}"
+
+- name: Fetch and unarchive JuiceFS binary
+  become: true
+  unarchive:
+    src: "https://d.juicefs.com/juicefs/releases/download/v{{ latest_tag }}/juicefs-{{ latest_tag }}-linux-{{ arch }}.tar.gz"
+    dest: "{{ jfs_bin_dir }}"
+    remote_src: true
+    creates: "{{ jfs_bin_dir }}/juicefs"
+    include:
+      - juicefs

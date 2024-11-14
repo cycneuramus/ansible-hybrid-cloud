@@ -57,6 +57,10 @@
     - role: rclone-install
       tags: rclone-install
 
+    - role: juicefs
+      tags: juicefs
+      when: storage == "juicefs"
+
     - role: rclone-docker-plugin
       when:
         - rclone_mode == "plugin"
