@@ -18,6 +18,11 @@
     - storage != "glusterfs"
     - rclone_mode == "mount"
 
+- name: Configure JuiceFS mounts
+  include_tasks: juicefs.yml
+  when:
+    - storage == "juicefs"
+
 # - name: Enable and start mount user services
 #   systemd:
 #     name: "{{ item }}"

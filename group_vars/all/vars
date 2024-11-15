@@ -20,6 +20,7 @@ wireguard_port: 51820
 nas_mount_path: "/mnt/nas"
 s3_mount_path: "/mnt/s3"
 crypt_mount_path: "/mnt/crypt"
+jfs_mount_path: "/mnt/jfs"
 gluster_mount_path: "/mnt/gluster"
 gluster_brick_path: "{{ ansible_env.HOME }}/.local/share/gluster/brick1"
 gluster_brick_name: cld
