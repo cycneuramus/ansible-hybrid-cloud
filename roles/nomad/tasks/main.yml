@@ -8,11 +8,12 @@
     repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
     state: present
 
-- name: Install nomad
+- name: Install nomad with podman plugin
   apt:
     update_cache: true
     name:
       - nomad
+      - nomad-driver-podman
 
 - name: Gather the service facts
   service_facts:

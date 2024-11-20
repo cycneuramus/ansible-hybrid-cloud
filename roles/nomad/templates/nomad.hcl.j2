@@ -13,7 +13,7 @@ advertise {
 }
 
 data_dir = "{{ nomad_data_dir }}"
-plugin_dir = "{{ nomad_data_dir }}/plugins"
+plugin_dir = "/opt/nomad/data/plugins"
 log_level = "warn"
 log_file = "{{ nomad_data_dir }}/logs/nomad.log"
 log_rotate_max_files = 5
@@ -86,6 +86,15 @@ plugin "docker" {
 
 		gc {
 			image_delay = "24h"
+		}
+	}
+}
+
+plugin "nomad-driver-podman" {
+	config {
+		socket_path = "unix:///run/user/1000/podman/podman.sock"
+		volumes {
+			enabled = true
 		}
 	}
 }
