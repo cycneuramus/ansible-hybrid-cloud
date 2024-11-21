@@ -1,0 +1,8 @@
+- name: Enable systemd user lingering
+  command: "loginctl enable-linger {{ ansible_user }}"
+
+# TODO:
+  # policy.json
+  # socket user service
+  # subuid/subgid
+  # privileged port (or maybe not)
