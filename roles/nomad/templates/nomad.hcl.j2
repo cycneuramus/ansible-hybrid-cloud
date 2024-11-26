@@ -3,11 +3,7 @@ region = "global"
 datacenter = "dc1"
 
 advertise {
-{% if "{{ cluster_labels["datacenter"] }}" == "eso" %}
-	http = "{{ ansible_host }}"
-{% else %}
 	http = "{{ wireguard_ip }}"
-{% endif %}
 	rpc = "{{ wireguard_ip }}"
 	serf = "{{ wireguard_ip }}"
 }
@@ -90,9 +86,15 @@ plugin "docker" {
 	}
 }
 
+telemetry {
+  publish_allocation_metrics = false
+  publish_node_metrics       = false
+  collection_interval        = "30s"
+}
+
 plugin "nomad-driver-podman" {
 	config {
-		socket_path = "unix:///run/user/1000/podman/podman.sock"
+		socket_path = "unix:///run/user/{{ new_user_uid }}/podman/podman.sock"
 		volumes {
 			enabled = true
 		}

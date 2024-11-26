@@ -1,8 +1,51 @@
+- name: Add GPG key
+  get_url:
+    url: https://download.opensuse.org/repositories/home:alvistack/Debian_12/Release.key
+    dest: /etc/apt/trusted.gpg.d/home_alvistack.asc
+
+- name: Add alvistack Podman repository
+  apt_repository:
+    repo: deb http://download.opensuse.org/repositories/home:/alvistack/Debian_{{ ansible_distribution_major_version }}/ /
+    state: present
+
+- name: Install Podman packages
+  apt:
+    update_cache: true
+    name:
+      - podman
+      - podman-netavark
+      - rootlesskit
+      - slirp4netns
+
+- name: Ensure configuration directory
+  file:
+    path: "{{ ansible_env.HOME }}/.config/containers"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0755
+
+- name: Install policy.json configuration
+  copy:
+    src: policy.json
+    dest: "{{ ansible_env.HOME }}/.config/containers/policy.json"
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: 0644
+
 - name: Enable systemd user lingering
   command: "loginctl enable-linger {{ ansible_user }}"
 
+- name: Enable and start Podman user socket
+  become_user: "{{ ansible_user }}"
+  systemd:
+    name: podman.socket
+    enabled: true
+    state: started
+    scope: user
+  environment:
+    XDG_RUNTIME_DIR: "/run/user/{{ new_user_uid }}"
+
 # TODO:
-  # policy.json
-  # socket user service
   # subuid/subgid
   # privileged port (or maybe not)

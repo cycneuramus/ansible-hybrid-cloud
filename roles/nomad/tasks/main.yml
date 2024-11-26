@@ -3,7 +3,7 @@
     url: https://apt.releases.hashicorp.com/gpg
     dest: /etc/apt/trusted.gpg.d/nomad.asc
 
-- name: Add hashicorp repository
+- name: Add Hashicorp repository
   apt_repository:
     repo: deb https://apt.releases.hashicorp.com {{ ansible_distribution_release }} main
     state: present

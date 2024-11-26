@@ -1,6 +1,6 @@
 orchestrator: nomad
 protection: crowdsec
-container_engine: docker
+container_engine: podman
 rclone_mode: mount
 storage: juicefs
 vagrant: false

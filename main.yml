@@ -46,11 +46,12 @@
 
     - role: docker
       become: true
-      when: container_engine == docker
+      when: container_engine == "docker"
       tags: docker
 
     - role: podman
-      when: container_engine == podman
+      become: true
+      when: container_engine == "podman"
       tags: podman
 
     - role: dirs
