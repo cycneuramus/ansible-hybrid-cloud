@@ -25,6 +25,21 @@
 				{
 					"type": "insecureAcceptAnything"
 				}
+			],
+			"codeberg.org": [
+				{
+					"type": "insecureAcceptAnything"
+				}
+			],
+			"registry.gitlab.com": [
+				{
+					"type": "insecureAcceptAnything"
+				}
+			],
+			"gcr.io": [
+				{
+					"type": "insecureAcceptAnything"
+				}
 			]
 		}
 	}
