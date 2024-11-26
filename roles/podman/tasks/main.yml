@@ -33,6 +33,14 @@
     group: "{{ ansible_user }}"
     mode: 0644
 
+- name: Allow rootless binding to privileged ports
+  sysctl:
+    name: net.ipv4.ip_unprivileged_port_start
+    value: "25"
+    state: present
+    sysctl_set: true
+    reload: true
+
 - name: Enable systemd user lingering
   command: "loginctl enable-linger {{ ansible_user }}"
 
