@@ -8,14 +8,20 @@
 
 - name: Deploy JuiceFS mount services
   template:
-    src: "juicefs.service.j2"
-    dest: "/etc/systemd/system/juicefs.service"
+    src: "juicefs.mount.j2"
+    dest: "/etc/systemd/system/mnt-jfs.mount"
     owner: root
     group: root
     mode: "0644"
 
+- name: Link JuiceFS to /sbin/mount.juicefs
+  file:
+    src: /usr/local/bin/juicefs
+    dest: /sbin/mount.juicefs
+    state: link
+
 - name: Enable JuiceFS mount services
   systemd:
-    name: "juicefs.service"
+    name: "mnt-jfs.mount"
     enabled: true
     daemon_reload: true

@@ -1,0 +1,17 @@
+[Unit]
+Description=Mount JuiceFS filesystem for distributed storage
+After=network-online.target
+Wants=network-online.target
+AssertPathIsDirectory={{ jfs_mount_path }}
+StartLimitIntervalSec=120
+StartLimitBurst=6
+
+[Mount]
+What=unix:///home/{{ ansible_user }}/cld/keydb/sock/keydb.sock?db=1
+Where={{ jfs_mount_path }}
+Type=juicefs
+Options=cache-size=204800,writeback,no-usage-report,allow_other,user_id=1000,group_id=1000
+TimeoutSec=10
+
+[Install]
+WantedBy=default.target

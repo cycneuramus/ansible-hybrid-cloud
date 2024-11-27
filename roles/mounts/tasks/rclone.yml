@@ -26,5 +26,5 @@
     enabled: true
     daemon_reload: true
   loop:
-    - rclone-s3.service
+    # - rclone-s3.service
     - rclone-crypt.service
