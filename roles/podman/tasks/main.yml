@@ -12,25 +12,19 @@
   apt:
     update_cache: true
     name:
+      - crun
       - podman
       - podman-netavark
+      - podman-aardvark-dns
       - rootlesskit
       - slirp4netns
-
-- name: Ensure configuration directory
-  file:
-    path: "{{ ansible_env.HOME }}/.config/containers"
-    state: directory
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
-    mode: 0755
 
 - name: Install policy.json configuration
   copy:
     src: policy.json
-    dest: "{{ ansible_env.HOME }}/.config/containers/policy.json"
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    dest: "/etc/containers/policy.json"
+    owner: root
+    group: root
     mode: 0644
 
 - name: Allow rootless binding to privileged ports
@@ -54,6 +48,8 @@
   environment:
     XDG_RUNTIME_DIR: "/run/user/{{ new_user_uid }}"
 
-# TODO:
-  # subuid/subgid
-  # privileged port (or maybe not)
+- name: Enable and start Podman root socket
+  systemd:
+    name: podman.socket
+    enabled: true
+    state: started

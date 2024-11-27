@@ -94,7 +94,16 @@ telemetry {
 
 plugin "nomad-driver-podman" {
 	config {
-		socket_path = "unix:///run/user/{{ new_user_uid }}/podman/podman.sock"
+		socket {
+			name = "default"
+			socket_path = "unix:///run/user/1000/podman/podman.sock"
+		}
+
+		socket {
+			name = "root"
+			socket_path = "unix:///run/podman/podman.sock"
+		}
+
 		volumes {
 			enabled = true
 		}
