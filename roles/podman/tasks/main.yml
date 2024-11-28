@@ -27,6 +27,14 @@
     group: root
     mode: 0644
 
+- name: Install storage.conf configuration
+  copy:
+    src: storage.conf
+    dest: "/etc/containers/storage.conf"
+    owner: root
+    group: root
+    mode: 0644
+
 - name: Allow rootless binding to privileged ports
   sysctl:
     name: net.ipv4.ip_unprivileged_port_start
