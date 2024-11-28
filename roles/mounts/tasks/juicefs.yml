@@ -25,3 +25,11 @@
     name: "mnt-jfs.mount"
     enabled: true
     daemon_reload: true
+
+- name: Configure logrotate for JuiceFS
+  copy:
+    src: "juicefs.log"
+    dest: /etc/logrotate.d/juicefs
+    owner: root
+    group: root
+    mode: "0644"
