@@ -1,0 +1,27 @@
+Package: *
+Pin: origin download.opensuse.org
+Pin-Priority: 100
+
+Package: crun
+Pin: origin download.opensuse.org
+Pin-Priority: 1001
+
+Package: podman
+Pin: origin download.opensuse.org
+Pin-Priority: 1001
+
+Package: podman-netavark
+Pin: origin download.opensuse.org
+Pin-Priority: 1001
+
+Package: podman-aardvark-dns
+Pin: origin download.opensuse.org
+Pin-Priority: 1001
+
+Package: rootlesskit
+Pin: origin download.opensuse.org
+Pin-Priority: 1001
+
+Package: slirp4netns
+Pin: origin download.opensuse.org
+Pin-Priority: 1001

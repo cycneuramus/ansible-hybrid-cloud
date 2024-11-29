@@ -1,12 +1,23 @@
-- name: Add GPG key
+- name: Add GPG key for alvistack repository
   get_url:
     url: https://download.opensuse.org/repositories/home:alvistack/Debian_12/Release.key
     dest: /etc/apt/trusted.gpg.d/home_alvistack.asc
+    owner: root
+    group: root
+    mode: "0644"
 
-- name: Add alvistack Podman repository
+- name: Add alvistack repository
   apt_repository:
     repo: deb http://download.opensuse.org/repositories/home:/alvistack/Debian_{{ ansible_distribution_major_version }}/ /
     state: present
+
+- name: Install apt policy to choose only Podman packages from alvistack repository
+  copy:
+    src: custom-repo
+    dest: "/etc/apt/preferences.d/custom-repo"
+    owner: root
+    group: root
+    mode: "0644"
 
 - name: Install Podman packages
   apt:
@@ -19,21 +30,16 @@
       - rootlesskit
       - slirp4netns
 
-- name: Install policy.json configuration
+- name: Install container configuration files
   copy:
-    src: policy.json
-    dest: "/etc/containers/policy.json"
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
     owner: root
     group: root
-    mode: 0644
-
-- name: Install storage.conf configuration
-  copy:
-    src: storage.conf
-    dest: "/etc/containers/storage.conf"
-    owner: root
-    group: root
-    mode: 0644
+    mode: "0644"
+  with_items:
+    - { src: "policy.json", dest: "/etc/containers/policy.json" }
+    - { src: "storage.conf", dest: "/etc/containers/storage.conf" }
 
 - name: Allow rootless binding to privileged ports
   sysctl:
@@ -45,6 +51,7 @@
 
 - name: Enable systemd user lingering
   command: "loginctl enable-linger {{ ansible_user }}"
+  changed_when: false
 
 - name: Enable and start Podman user socket
   become_user: "{{ ansible_user }}"

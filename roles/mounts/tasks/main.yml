@@ -3,7 +3,6 @@
   when:
     - cluster_labels["nas"] != "true"
     - cluster_labels["datacenter"] == "eso"
-    - cluster_labels["nas"] == "false"
 
 - name: Configure glusterfs mounts
   include_tasks: glusterfs.yml
@@ -22,16 +21,3 @@
   include_tasks: juicefs.yml
   when:
     - storage == "juicefs"
-
-# - name: Enable and start mount user services
-#   systemd:
-#     name: "{{ item }}"
-#     state: started
-#     enabled: true
-#     daemon_reload: true
-#     scope: user
-#   environment:
-#     XDG_RUNTIME_DIR: "/run/user/{{ ansible_facts.user_uid }}"
-#   loop:
-#     - rclone-s3.service
-#     - rclone-crypt.service
