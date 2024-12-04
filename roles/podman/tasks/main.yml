@@ -34,12 +34,13 @@
   copy:
     src: "{{ item.src }}"
     dest: "{{ item.dest }}"
-    owner: root
-    group: root
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
     mode: "0644"
   with_items:
-    - { src: "policy.json", dest: "/etc/containers/policy.json" }
-    - { src: "storage.conf", dest: "/etc/containers/storage.conf" }
+    - { src: "storage.conf", dest: "/etc/containers/storage.conf", owner: "root", group: "root" }
+    - { src: "policy.json", dest: "/etc/containers/policy.json", owner: "root", group: "root" }
+    - { src: "policy.json", dest: "{{ ansible_env.HOME }}/.config/containers/policy.json", owner: "{{ ansible_user }}", group: "{{ ansible_user }}" }
 
 - name: Allow rootless binding to privileged ports
   sysctl:
