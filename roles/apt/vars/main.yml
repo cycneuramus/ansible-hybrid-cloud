@@ -1,15 +1,16 @@
-packages_to_install:
-    - bash-completion
-    - cron
-    - curl
-    - git
-    - htop
-    - jq
-    - kitty-terminfo
-    - nodejs
-    - npm
-    - rsync
-    - shellcheck
-    - ufw
-    - unattended-upgrades
-    - wireguard
+pkgs:
+  - bash-completion
+  - cron
+  - curl
+  - fzf
+  - git
+  - htop
+  - jq
+  - kitty-terminfo
+  - nodejs
+  - npm
+  - rsync
+  - shellcheck
+  - ufw
+  - unattended-upgrades
+  - wireguard
