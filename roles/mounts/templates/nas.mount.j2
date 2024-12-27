@@ -10,7 +10,7 @@ StartLimitBurst=6
 What={{ hostvars[nas_node].ansible_host }}:{{ nas_mount_path }}
 Where={{ nas_mount_path }}
 Type=nfs
-Options=vers=3,noatime
+Options=vers=4.2,noatime
 TimeoutSec=10
 
 [Install]
