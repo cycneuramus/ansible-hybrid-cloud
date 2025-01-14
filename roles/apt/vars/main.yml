@@ -1,16 +1,21 @@
 pkgs:
   - bash-completion
+  - black
   - cron
   - curl
   - fzf
   - git
   - htop
+  - isort
   - jq
   - kitty-terminfo
   - nodejs
   - npm
+  - pipx
   - rsync
   - shellcheck
+  - shfmt
   - ufw
+  - vim
   - unattended-upgrades
   - wireguard
