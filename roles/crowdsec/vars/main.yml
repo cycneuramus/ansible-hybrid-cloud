@@ -2,13 +2,10 @@ cidr_whitelist: "{{ vault_cidr_whitelist.split(' ') }}"
 ip_whitelist: "{{ vault_ip_whitelist.split(' ') }}"
 collections_list:
   - crowdsecurity/caddy
-  - crowdsecurity/dovecot
   - crowdsecurity/iptables
   - crowdsecurity/linux
-  - crowdsecurity/postfix
   - crowdsecurity/sshd
 parsers_list:
-  - crowdsecurity/docker-logs
   - crowdsecurity/whitelists
 ban_duration: "duration: 672h"
 acquis_addons: |
@@ -23,9 +20,3 @@ acquis_addons: |
     - {{ ansible_env.HOME }}/log/caddy/access.log
   labels:
     type: caddy
-  ---
-  filenames:
-    - {{ ansible_env.HOME }}/log/mail/mail.log
-  labels:
-    type: syslog
-  ---

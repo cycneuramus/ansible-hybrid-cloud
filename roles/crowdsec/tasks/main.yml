@@ -51,6 +51,7 @@
     regexp: ".*DOCKER-USER"
     replace: "  - DOCKER-USER"
     validate: "crowdsec-firewall-bouncer -t -c %s"
+  when: container_engine == "docker"
 
 - name: Update cscli hub
   command:
