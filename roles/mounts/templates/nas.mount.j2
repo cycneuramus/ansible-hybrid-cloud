@@ -3,8 +3,6 @@ Description=Mount NFS Share
 After=network-online.target
 Wants=network-online.target
 AssertPathIsDirectory={{ nas_mount_path }}
-StartLimitIntervalSec=120
-StartLimitBurst=6
 
 [Mount]
 What={{ hostvars[nas_node].ansible_host }}:{{ nas_mount_path }}
