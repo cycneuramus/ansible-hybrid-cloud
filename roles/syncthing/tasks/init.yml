@@ -3,7 +3,7 @@
     name: fs.inotify.max_user_watches
     value: 409600
     state: present
-    reload: yes
+    reload: true
 
 - name: Stop syncthing service
   become: true

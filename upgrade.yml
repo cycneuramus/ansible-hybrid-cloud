@@ -18,9 +18,9 @@
   tasks:
     - name: Upgrade all packages to the latest version
       apt:
-        update_cache: yes
+        update_cache: true
         upgrade: full
-        autoremove: yes
+        autoremove: true
         purge: true
 
     - name: Reboot the server
