@@ -1,12 +1,10 @@
 pkgs:
   - bash-completion
-  - black
   - cron
   - curl
   - fzf
   - git
   - htop
-  - isort
   - jq
   - kitty-terminfo
   - nodejs
