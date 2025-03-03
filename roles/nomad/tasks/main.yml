@@ -2,6 +2,7 @@
   get_url:
     url: https://apt.releases.hashicorp.com/gpg
     dest: /etc/apt/trusted.gpg.d/nomad.asc
+    mode: "644"
 
 - name: Add Hashicorp repository
   apt_repository:

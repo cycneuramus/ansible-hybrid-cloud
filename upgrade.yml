@@ -1,6 +1,5 @@
 - name: Bring down Nomad jobs
   hosts: cluster_managers
-
   tasks:
     - name: Execute nmgr down all
       command: nmgr down all

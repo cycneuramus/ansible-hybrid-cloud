@@ -27,6 +27,7 @@
   get_url:
     url: https://packagecloud.io/crowdsec/crowdsec/gpgkey
     dest: /etc/apt/trusted.gpg.d/crowdsec.asc
+    mode: "644"
 
 - name: Add Crowdsec repository
   apt_repository:
@@ -34,10 +35,9 @@
     state: present
 
 - name: Update repo cache and install Crowdsec
-  package:
+  apt:
     update_cache: true
     name: crowdsec
-    state: latest
 
 - name: Install firewall bouncer
   package:
