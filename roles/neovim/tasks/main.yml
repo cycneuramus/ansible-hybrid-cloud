@@ -1,5 +1,7 @@
 - name: Uninstall old neovim
-  apt: name=neovim state=absent
+  apt:
+    name: neovim
+    state: absent
 
 - name: Install Python dependencies
   apt:
@@ -8,9 +10,21 @@
       - python3-venv
     update_cache: true
 
+- name: Set Neovim target architecture
+  set_fact:
+    nvim_arch: >-
+      {{ 'x86_64' if ansible_architecture == 'x86_64'
+         else 'arm64' if ansible_architecture in ['aarch64', 'arm64']
+         else 'unsupported' }}
+
+- name: Fail if unsupported architecture
+  fail:
+    msg: "Unsupported architecture: {{ ansible_architecture }}"
+  when: nvim_arch == 'unsupported'
+
 - name: Download nvim appimage
   get_url:
-    url: https://github.com/neovim/neovim/releases/download/stable/nvim.appimage
+    url: https://github.com/neovim/neovim/releases/download/stable/nvim-linux-{{ nvim_arch | trim }}.appimage
     dest: /tmp/nvim.appimage
     mode: "0775"
 
@@ -23,14 +37,14 @@
     mode: "0755"
     remote_src: true
 
-- name: Use nvim for vi
-  alternatives: name=vi path=/usr/local/bin/nvim
-
-- name: Use nvim for vim
-  alternatives: name=vim path=/usr/local/bin/nvim
-
-- name: Use nvim for editor
-  alternatives: name=editor path=/usr/local/bin/nvim
+- name: Use nvim alternative
+  alternatives:
+    name: "{{ item }}"
+    path: /usr/local/bin/nvim
+  loop:
+    - vi
+    - vim
+    - editor
 
 - name: Sync local nvim config to remotes
   copy:
@@ -38,3 +52,4 @@
     dest: "{{ ansible_env.HOME }}/.config"
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
+    mode: 0755

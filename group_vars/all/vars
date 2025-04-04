@@ -3,7 +3,7 @@ protection: crowdsec
 container_engine: podman
 rclone_mode: mount
 storage: juicefs
-editor: vim
+editor: neovim
 vagrant: false
 
 ansible_port: 22

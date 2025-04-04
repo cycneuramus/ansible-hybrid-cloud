@@ -55,6 +55,7 @@
   changed_when: false
 
 - name: Enable and start Podman user socket
+  become: true
   become_user: "{{ ansible_user }}"
   systemd:
     name: podman.socket
