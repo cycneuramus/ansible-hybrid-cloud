@@ -5,6 +5,7 @@ all:
         apex:
           arch: amd64
           ansible_host: "{{ host_apex }}"
+          ssh_custom_port: 4422
           wireguard_ip: 10.10.10.10
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
@@ -16,6 +17,7 @@ all:
         ambi:
           arch: amd64
           ansible_host: "{{ host_ambi }}"
+          ssh_custom_port: 4422
           wireguard_ip: 10.10.10.11
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:
@@ -27,6 +29,7 @@ all:
         horreum:
           arch: amd64
           ansible_host: "{{ host_horreum }}"
+          ssh_custom_port: 4422
           wireguard_ip: 10.10.10.12
           wireguard_endpoint: "{{ wireguard_endpoint_home }}"
           cluster_labels:

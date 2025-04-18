@@ -16,7 +16,7 @@
     - regexp: "^PermitRootLogin"
       line: "PermitRootLogin no"
     - regexp: "^Port"
-      line: "Port {{ ansible_port | default('22') }}"
+      line: "Port {{ ssh_custom_port | default('22') }}"
 
 - name: Enable password auth on local networks
   blockinfile:
