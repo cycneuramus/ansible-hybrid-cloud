@@ -6,7 +6,7 @@ storage: juicefs
 editor: neovim
 vagrant: false
 
-ansible_port: 22
+ansible_port: 4422
 ansible_user: "{{ vault_user }}"
 new_user: "{{ vault_new_user }}"
 new_user_uid: "{{ vault_new_user_uid }}"
