@@ -8,7 +8,6 @@ pkgs:
   - htop
   - jq
   - kitty-terminfo
-  - pre-commit
   - pipx
   - ripgrep
   - rsync
