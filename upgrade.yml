@@ -4,7 +4,7 @@
     - name: Execute nmgr down all
       command: nmgr down all
       environment:
-        PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.PATH }}"
+        PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
       when: inventory_hostname == leader_node
 
 - name: Upgrade nodes one at a time
