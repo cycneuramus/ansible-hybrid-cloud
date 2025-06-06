@@ -37,7 +37,7 @@
     - name: Ensure the server is reachable after reboot
       ping:
 
-- name: Restart NAS mount
+- name: Restart services
   hosts: all
   become: true
 
