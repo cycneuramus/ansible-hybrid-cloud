@@ -47,3 +47,8 @@
         name: mnt-nas.mount
         state: restarted
       when: cluster_labels["nas"] != "true"
+
+    - name: Restart nomad
+      service:
+        name: nomad
+        state: restarted
