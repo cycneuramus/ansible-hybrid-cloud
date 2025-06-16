@@ -1,10 +1,11 @@
 - name: Bring down Nomad jobs
   hosts: cluster_managers
+  environment:
+    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
   tasks:
     - name: Execute nmgr down all
       command: nmgr down all
-      environment:
-        PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
+      changed_when: true
       when: inventory_hostname == leader_node
 
 - name: Upgrade nodes one at a time
@@ -40,7 +41,6 @@
 - name: Restart services
   hosts: all
   become: true
-
   tasks:
     - name: Restart mount unit
       service:
@@ -52,3 +52,48 @@
       service:
         name: nomad
         state: restarted
+
+- name: Bring up infra jobs
+  hosts: cluster_managers
+  environment:
+    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
+  tasks:
+    - name: Execute nmgr up infra
+      command: nmgr up infra
+      changed_when: true
+      when: inventory_hostname == leader_node
+
+- name: Bring up jfs mounts
+  hosts: all
+  become: true
+  tasks:
+    - name: Grace period for e.g. keydb
+      pause:
+        seconds: 30
+
+    - name: Restart jfs mount unit
+      service:
+        name: mnt-jfs.mount
+        state: restarted
+
+    - name: Verify jfs mount
+      find:
+        paths: "/mnt/jfs"
+        recurse: no
+        file_type: directory
+      register: dirs_found
+
+    - name: Fail on empty mount
+      fail:
+        msg: "/mnt/jfs is empty"
+      when: dirs_found.matched > 0
+
+- name: Bring up service jobs
+  hosts: cluster_managers
+  environment:
+    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
+  tasks:
+    - name: Execute nmgr up -d services
+      command: nmgr up services
+      changed_when: true
+      when: inventory_hostname == leader_node
