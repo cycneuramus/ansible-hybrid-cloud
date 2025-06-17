@@ -1,44 +1,28 @@
 - name: Create user directories
   ansible.builtin.file:
-      path: "{{ item }}"
-      state: directory
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
-      mode: "755"
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "755"
   with_items:
-      - dl
-      - log
-      - mnt
-      - mnt/s3
-      - mnt/crypt
+    - dl
+    - log
+    - mnt
 
 - name: Create ingress log directory
   when: cluster_labels["ingress"] == "true"
   ansible.builtin.file:
-      path: log/caddy
-      state: directory
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
-      mode: "755"
+    path: log/caddy
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "755"
 
 - name: Create mail log directory
   ansible.builtin.file:
-      path: log/mail
-      state: directory
-      owner: "{{ ansible_user }}"
-      group: "{{ ansible_user }}"
-      mode: "755"
-
-# - name: Create root directories
-#   become: true
-#   ansible.builtin.file:
-#     path: "{{ item }}"
-#     state: directory
-#     mode: "755"
-#   with_items:
-#     - /mnt/cch
-#     - /mnt/cld
-#     - /mnt/seaweedfs/backup
-#     - /mnt/seaweedfs/filer
-#     - /mnt/seaweedfs/master
-#     - /mnt/seaweedfs/volume
+    path: log/mail
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "755"

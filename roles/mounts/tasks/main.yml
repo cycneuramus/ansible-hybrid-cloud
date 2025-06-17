@@ -11,11 +11,11 @@
     - cluster_labels["gluster"] == "true"
     - cluster_labels["datacenter"] == "eso"
 
-- name: Configure rclone mounts
-  include_tasks: rclone.yml
-  when:
-    - storage != "glusterfs"
-    - rclone_mode == "mount"
+# - name: Configure rclone mounts
+#   include_tasks: rclone.yml
+#   when:
+#     - storage != "glusterfs"
+#     - rclone_mode == "mount"
 
 - name: Configure JuiceFS mounts
   include_tasks: juicefs.yml
