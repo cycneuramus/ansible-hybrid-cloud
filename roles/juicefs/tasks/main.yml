@@ -13,10 +13,16 @@
   set_fact:
     latest_tag: "{{ release_data.json.tag_name | regex_replace('^v', '') }}"
 
+- name: Check if juicefs binary exists
+  stat:
+    path: "{{ jfs_bin_dir }}/juicefs"
+  register: juicefs_binary
+
 - name: Get JuiceFS version string
   command: juicefs version
   register: juicefs_version_cmd
   changed_when: false
+  when: juicefs_binary.stat.exists
 
 - name: Extract semantic version
   set_fact:
@@ -24,11 +30,12 @@
       | regex_search('^juicefs version ([0-9]+\\.[0-9]+\\.[0-9]+)', '\\1')
       | first
       | default('0.0.0')) }}"
+  when: juicefs_binary.stat.exists
 
 - name: Debug version
   debug:
     msg: "installed: {{ juicefs_semver }}, latest = {{ juicefs_semver }}"
-  when: juicefs_version_cmd.rc == 0
+  when: juicefs_binary.stat.exists and juicefs_version_cmd.rc == 0
 
 - name: Fetch and unarchive JuiceFS binary
   become: true
@@ -38,4 +45,4 @@
     remote_src: true
     include:
       - juicefs
-  when: juicefs_semver is version(latest_tag, '<')
+  when: not juicefs_binary.stat.exists or (juicefs_semver is version(latest_tag, '<'))

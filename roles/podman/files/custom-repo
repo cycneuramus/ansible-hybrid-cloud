@@ -25,3 +25,7 @@ Pin-Priority: 1001
 Package: slirp4netns
 Pin: origin download.opensuse.org
 Pin-Priority: 1001
+
+Package: libslirp0
+Pin: origin download.opensuse.org
+Pin-Priority: 1001

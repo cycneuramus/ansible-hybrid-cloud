@@ -2,16 +2,20 @@ pkgs:
   - bash-completion
   - cron
   - curl
-  - fd
+  - fd-find
+  - ffmpeg
   - fzf
   - git
   - htop
   - jq
   - kitty-terminfo
+  - nfs-common
   - pipx
   - ripgrep
   - rsync
+  - sysstat
   - ufw
   - unattended-upgrades
+  - va-driver-all
   - vim
   - wireguard

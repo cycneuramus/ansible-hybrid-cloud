@@ -3,9 +3,10 @@
     name: neovim
     state: absent
 
-- name: Install Python dependencies
+- name: Install dependencies
   apt:
     pkg:
+      - gcc
       - python3-pynvim
       - python3-venv
     update_cache: true

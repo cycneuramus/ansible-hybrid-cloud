@@ -30,6 +30,16 @@
       - rootlesskit
       - slirp4netns
 
+- name: Create podman directories
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: "755"
+  with_items:
+    - "{{ ansible_env.HOME }}/.config/containers"
+
 - name: Install container configuration files
   copy:
     src: "{{ item.src }}"
