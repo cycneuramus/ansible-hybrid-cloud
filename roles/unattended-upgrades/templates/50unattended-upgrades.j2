@@ -3,6 +3,8 @@ Unattended-Upgrade::Automatic-Reboot "false";
 Unattended-Upgrade::Automatic-Reboot-Time 05:30;
 
 Unattended-Upgrade::Allowed-Origins {
-        "${distro_id} ${distro_codename}-security";
-      	"${distro_id} ${distro_codename}-updates";
+        "${distro_id}:${distro_codename}-security";
+        "${distro_id}:stable-security";
+      	"${distro_id}:${distro_codename}-updates";
+        "${distro_id}:stable-updates";
 };
