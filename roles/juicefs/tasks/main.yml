@@ -34,13 +34,13 @@
 
 - name: Debug version
   debug:
-    msg: "installed: {{ juicefs_semver }}, latest = {{ juicefs_semver }}"
+    msg: "installed: {{ juicefs_semver }}, latest = {{ latest_tag }}"
   when: juicefs_binary.stat.exists and juicefs_version_cmd.rc == 0
 
 - name: Fetch and unarchive JuiceFS binary
   become: true
   unarchive:
-    src: "https://d.juicefs.com/juicefs/releases/download/v{{ latest_tag }}/juicefs-{{ latest_tag }}-linux-{{ arch }}.tar.gz"
+    src: "https://github.com/juicedata/juicefs/releases/download/v{{ latest_tag }}/juicefs-{{ latest_tag }}-linux-{{ arch }}.tar.gz"
     dest: "{{ jfs_bin_dir }}"
     remote_src: true
     include:
