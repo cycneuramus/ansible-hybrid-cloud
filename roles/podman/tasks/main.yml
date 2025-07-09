@@ -1,23 +1,30 @@
-- name: Add GPG key for alvistack repository
-  get_url:
-    url: https://download.opensuse.org/repositories/home:alvistack/Debian_12/Release.key
-    dest: /etc/apt/trusted.gpg.d/home_alvistack.asc
-    owner: root
-    group: root
-    mode: "0644"
+- name: Determine Debian major version
+  set_fact:
+    debian_major_version: "{{ ansible_distribution_version.split('.')[0] }}"
 
-- name: Add alvistack repository
-  apt_repository:
-    repo: deb http://download.opensuse.org/repositories/home:/alvistack/Debian_{{ ansible_distribution_major_version }}/ /
-    state: present
+- name: Use Podman repo for Debian 12
+  when: debian_major_version | int == 12
+  block:
+    - name: Add GPG key for alvistack repository
+      get_url:
+        url: https://download.opensuse.org/repositories/home:alvistack/Debian_12/Release.key
+        dest: /etc/apt/trusted.gpg.d/home_alvistack.asc
+        owner: root
+        group: root
+        mode: "0644"
 
-- name: Install apt policy to choose only Podman packages from alvistack repository
-  copy:
-    src: custom-repo
-    dest: "/etc/apt/preferences.d/custom-repo"
-    owner: root
-    group: root
-    mode: "0644"
+    - name: Add alvistack repository
+      apt_repository:
+        repo: deb http://download.opensuse.org/repositories/home:/alvistack/Debian_{{ ansible_distribution_major_version }}/ /
+        state: present
+
+    - name: Install apt policy to choose only Podman packages from alvistack repository
+      copy:
+        src: custom-repo
+        dest: "/etc/apt/preferences.d/custom-repo"
+        owner: root
+        group: root
+        mode: "0644"
 
 - name: Install Podman packages
   apt:
