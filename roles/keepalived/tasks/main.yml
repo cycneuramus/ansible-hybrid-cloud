@@ -1,0 +1,28 @@
+- name: Install keepalived
+  apt:
+    name: keepalived
+    state: present
+
+- name: Define facts
+  set_fact:
+    keepalived_state: "{{ 'MASTER' if inventory_hostname == leader_node else 'BACKUP' }}"
+    keepalived_priority: "{{ 100 if inventory_hostname == leader_node else 90 }}"
+
+- name: Auto-select interface
+  set_fact:
+    keepalived_interface: "{{ ansible_default_ipv4.interface }}"
+
+- name: Deploy keepalived.conf
+  template:
+    src: keepalived.conf.j2
+    dest: /etc/keepalived/keepalived.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload keepalived
+
+- name: Enable and start keepalived
+  service:
+    name: keepalived
+    state: started
+    enabled: yes
