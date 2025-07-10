@@ -30,10 +30,10 @@
   apt:
     update_cache: true
     name:
+      - aardvark-dns
       - crun
+      - netavark
       - podman
-      - podman-netavark
-      - podman-aardvark-dns
       - rootlesskit
       - slirp4netns
 
