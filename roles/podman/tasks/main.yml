@@ -73,6 +73,12 @@
         owner: "{{ ansible_user }}",
         group: "{{ ansible_user }}",
       }
+    - {
+        src: "containers.conf",
+        dest: "{{ ansible_env.HOME }}/.config/containers/containers.conf",
+        owner: "{{ ansible_user }}",
+        group: "{{ ansible_user }}",
+      }
 
 - name: Allow rootless binding to privileged ports
   sysctl:
