@@ -3,10 +3,24 @@
   environment:
     PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
   tasks:
-    - name: Execute nmgr down all
-      command: nmgr down all
-      changed_when: true
+    - name: Bring down Nomad jobs
       when: inventory_hostname == leader_node
+      block:
+        - name: Bring down services
+          command: nmgr down services
+          changed_when: true
+
+        - name: Grace period for final writes
+          pause:
+            seconds: 60
+
+        - name: Bring down infra
+          command: nmgr down infra
+          changed_when: true
+
+        - name: Grace period for final writes
+          pause:
+            seconds: 30
 
 - name: Upgrade nodes one at a time
   hosts: all
@@ -48,11 +62,27 @@
         state: restarted
       when: cluster_labels["nas"] != "true"
 
+    - name: Verify nas mount
+      find:
+        paths: "/mnt/nas"
+        recurse: no
+        file_type: directory
+      register: nas_dirs_found
+
+    - name: Fail on empty mount
+      fail:
+        msg: "/mnt/nas is empty"
+      when: nas_dirs_found.matched < 1
+
     - name: Restart nomad
       service:
         name: nomad
         state: restarted
 
+    - name: Grace period for Nomad start
+      pause:
+        seconds: 15
+#
 - name: Bring up infra jobs
   hosts: cluster_managers
   environment:
@@ -76,17 +106,21 @@
         name: mnt-jfs.mount
         state: restarted
 
+    - name: Grace period for mount
+      pause:
+        seconds: 5
+
     - name: Verify jfs mount
       find:
         paths: "/mnt/jfs"
         recurse: no
         file_type: directory
-      register: dirs_found
+      register: jfs_dirs_found
 
     - name: Fail on empty mount
       fail:
         msg: "/mnt/jfs is empty"
-      when: dirs_found.matched > 0
+      when: jfs_dirs_found.matched < 1
 
 - name: Bring up service jobs
   hosts: cluster_managers
@@ -94,6 +128,6 @@
     PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
   tasks:
     - name: Execute nmgr up -d services
-      command: nmgr up services
+      command: nmgr up -d services
       changed_when: true
       when: inventory_hostname == leader_node
