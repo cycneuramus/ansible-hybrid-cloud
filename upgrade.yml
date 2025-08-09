@@ -52,14 +52,8 @@
         reboot_timeout: "{{ reboot_timeout }}"
 
     - name: Wait for the server to come back online
-      wait_for:
-        port: "{{ ansible_port }}"
-        host: "{{ inventory_hostname }}"
+      wait_for_connection:
         timeout: "{{ reboot_timeout }}"
-        state: started
-
-    - name: Ensure the server is reachable after reboot
-      ping:
 
 - name: Restart services
   hosts: all
