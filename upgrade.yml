@@ -22,6 +22,15 @@
           pause:
             seconds: 30
 
+- name: Stop jfs mount unit
+  hosts: all
+  become: true
+  tasks:
+    - name: Stop jfs mount unit
+      service:
+        name: mnt-jfs.mount
+        state: stopped
+
 - name: Upgrade nodes one at a time
   hosts: all
   serial: 1
