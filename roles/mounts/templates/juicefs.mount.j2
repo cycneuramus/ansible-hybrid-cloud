@@ -7,7 +7,7 @@ StartLimitIntervalSec=120
 StartLimitBurst=6
 
 [Mount]
-What=unix:///home/{{ ansible_user }}/cld/keydb/sock/keydb.sock?db=2
+What=redis://{{ wireguard_ip }}:16379
 Where={{ jfs_mount_path }}
 Type=juicefs
 Options=cache-size=512000,writeback,allow_other,user_id=1000,group_id=1000,no-usage-report,readdir-cache,check-storage

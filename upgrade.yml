@@ -113,9 +113,9 @@
   hosts: all
   become: true
   tasks:
-    - name: Grace period for e.g. keydb
+    - name: Grace period for e.g. valkey
       pause:
-        seconds: 600
+        seconds: 30
 
     - name: Restart jfs mount unit
       service:
