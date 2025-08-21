@@ -22,14 +22,18 @@
   hosts: all
   become: true
   tasks:
-    - name: Wait until /mnt/jfs is not in use
-      shell: "fuser -m /mnt/jfs || true"
-      register: jfs_users
-      changed_when: false
-      failed_when: false
-      retries: 30
-      delay: 2
-      until: jfs_users.stdout | length == 0
+    # - name: Wait until /mnt/jfs is not in use
+    #   shell: "fuser -m /mnt/jfs || true"
+    #   register: jfs_users
+    #   changed_when: false
+    #   failed_when: false
+    #   retries: 30
+    #   delay: 2
+    #   until: jfs_users.stdout | length == 0
+
+    - name: Grace period for final writes
+      pause:
+        seconds: 60
 
     - name: Stop jfs mount unit
       service:
@@ -70,6 +74,10 @@
         state: restarted
       when: cluster_labels["nas"] != "true"
 
+    - name: Grace period for mount
+      pause:
+        seconds: 5
+
     - name: Verify nas mount
       find:
         paths: "/mnt/nas"
@@ -107,7 +115,7 @@
   tasks:
     - name: Grace period for e.g. keydb
       pause:
-        seconds: 30
+        seconds: 600
 
     - name: Restart jfs mount unit
       service:
