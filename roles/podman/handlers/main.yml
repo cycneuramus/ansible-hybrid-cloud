@@ -1,0 +1,8 @@
+- name: Reload udev
+  ansible.builtin.command: udevadm control --reload
+
+- name: Trigger existing DRM devices
+  ansible.builtin.command: udevadm trigger --subsystem-match=drm --action=add
+
+- name: Trigger existing TTY devices
+  ansible.builtin.command: udevadm trigger --subsystem-match=tty --action=add

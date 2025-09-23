@@ -1,0 +1,2 @@
+podman_dri_acl_enabled: true
+podman_dri_acl_uid: "{{ ansible_user_uid | default(1000) }}"

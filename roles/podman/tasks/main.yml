@@ -88,6 +88,82 @@
     sysctl_set: true
     reload: true
 
+- name: Enable ACL/udev management for /dev/dri/renderD*
+  when: podman_dri_acl_enabled
+  block:
+    - name: Ensure ACL tools are installed (setfacl/getfacl)
+      apt:
+        name: acl
+        state: present
+        update_cache: false
+
+    - name: Check if /dev/dri exists
+      ansible.builtin.stat:
+        path: /dev/dri
+      register: podman_dri_stat
+
+    - name: Find existing render nodes
+      when:
+        - podman_dri_stat.stat.exists
+      ansible.builtin.find:
+        paths: /dev/dri
+        patterns: "renderD*"
+        file_type: any
+      register: podman_dri_nodes
+
+    - name: Apply ACL to existing render nodes for target UID
+      when:
+        - podman_dri_stat.stat.exists
+      ansible.posix.acl:
+        path: "{{ item.path }}"
+        entity: "{{ podman_dri_acl_uid }}"
+        etype: user
+        permissions: rw
+        state: present
+      loop: "{{ podman_dri_nodes.files | default([]) }}"
+
+    - name: Check if /dev/serial/by-id exists
+      ansible.builtin.stat:
+        path: /dev/serial/by-id
+      register: serial_byid_stat
+
+    - name: Find Dresden Elektronik by-id symlinks
+      when: serial_byid_stat.stat.exists
+      ansible.builtin.find:
+        paths: /dev/serial/by-id
+        patterns: "usb-dresden_elektronik*"
+        file_type: any
+      register: dresden_symlinks
+
+    - name: Resolve by-id symlinks to real device nodes
+      when: serial_byid_stat.stat.exists
+      ansible.builtin.command:
+        cmd: readlink -f "{{ item.path }}"
+      loop: "{{ dresden_symlinks.files | default([]) }}"
+      register: dresden_realpaths
+      changed_when: false
+
+    - name: Apply ACL to resolved serial device nodes for target UID
+      when: serial_byid_stat.stat.exists
+      ansible.posix.acl:
+        path: "{{ item.stdout }}"
+        entity: "{{ podman_dri_acl_uid }}"
+        etype: user
+        permissions: rw
+        state: present
+      loop: "{{ dresden_realpaths.results | default([]) }}"
+
+    - name: Install udev rule for future render nodes
+      ansible.builtin.template:
+        src: 99-dri-acl.rules.j2
+        dest: "/etc/udev/rules.d/99-dri-acl.rules"
+        owner: root
+        group: root
+        mode: "0644"
+      notify:
+        - Reload udev
+        - Trigger existing DRM devices
+
 - name: Enable systemd user lingering
   command: "loginctl enable-linger {{ ansible_user }}"
   changed_when: false
@@ -104,6 +180,7 @@
     XDG_RUNTIME_DIR: "/run/user/{{ new_user_uid }}"
 
 - name: Enable and start Podman root socket
+  when: not podman_dri_acl_enabled
   systemd:
     name: podman.socket
     enabled: true

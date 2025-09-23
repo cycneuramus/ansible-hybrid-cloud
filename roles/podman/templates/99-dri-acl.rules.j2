@@ -1,0 +1,6 @@
+# Grant rw to the target UID for DRM render nodes for rootless containers
+KERNEL=="renderD*", ACTION=="add", RUN+="/usr/bin/setfacl -m u:{{ ansible_user_uid }}:rw /dev/dri/%k"
+
+# Match on tty devices tagged by udev with this vendor, then set ACL on the real node.
+SUBSYSTEM=="tty", ENV{ID_VENDOR}=="dresden elektronik", ACTION=="add", \
+  RUN+="/usr/bin/setfacl -m u:{{ podman_dri_acl_uid }}:rw $env{DEVNAME}"
