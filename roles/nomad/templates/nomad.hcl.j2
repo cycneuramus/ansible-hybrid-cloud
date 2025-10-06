@@ -100,10 +100,10 @@ plugin "nomad-driver-podman" {
 			socket_path = "unix:///run/user/1000/podman/podman.sock"
 		}
 
-		# socket {
-		# 	name = "root"
-		# 	socket_path = "unix:///run/podman/podman.sock"
-		# }
+		socket {
+			name = "root"
+			socket_path = "unix:///run/podman/podman.sock"
+		}
 
 		volumes {
 			enabled = true
