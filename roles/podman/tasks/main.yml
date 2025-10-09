@@ -87,6 +87,7 @@
     state: present
     sysctl_set: true
     reload: true
+    sysctl_file: /etc/sysctl.d/99-unpriv-ports.conf
 
 - name: Enable ACL/udev management for /dev/dri/renderD*
   when: podman_dri_acl_enabled
