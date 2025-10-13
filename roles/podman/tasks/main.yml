@@ -89,6 +89,24 @@
     reload: true
     sysctl_file: /etc/sysctl.d/99-unpriv-ports.conf
 
+- name: Increase inotify watches
+  sysctl:
+    name: fs.inotify.max_user_watches
+    value: 819200
+    state: present
+    sysctl_set: true
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-inotify-watches.conf
+
+- name: Increase inotify instances
+  sysctl:
+    name: fs.inotify.max_user_instances
+    value: 1024
+    state: present
+    sysctl_set: true
+    reload: true
+    sysctl_file: /etc/sysctl.d/99-inotify-instances.conf
+
 - name: Enable ACL/udev management for /dev/dri/renderD*
   when: podman_dri_acl_enabled
   block:
