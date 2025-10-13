@@ -136,6 +136,14 @@
         - keepalived
         - cluster
 
+    - role: valkey
+      become: true
+      when:
+        - cluster_labels["datacenter"] == "eso"
+      tags:
+        - valkey
+        - cluster
+
     - role: swarm
       when: orchestrator == "swarm"
       tags:

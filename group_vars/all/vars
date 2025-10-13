@@ -19,6 +19,7 @@ nas_node: "horreum"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
 
+keepalived_vip: 192.168.1.200
 nas_mount_path: "/mnt/nas"
 s3_mount_path: "/mnt/s3"
 crypt_mount_path: "/mnt/crypt"

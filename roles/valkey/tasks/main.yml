@@ -1,0 +1,62 @@
+- name: Ensure dependencies
+  apt:
+    name:
+      - valkey
+    state: present
+
+- name: Create valkey user and group
+  user:
+    name: valkey
+    system: true
+    shell: /usr/sbin/nologin
+    home: /var/lib/valkey
+    create_home: false
+
+- name: Ensure directories exist
+  file:
+    path: "{{ item.path }}"
+    state: directory
+    owner: "{{ item.owner | default('root') }}"
+    group: "{{ item.group | default('root') }}"
+    mode: "{{ item.mode | default('0755') }}"
+  loop:
+    - { path: /etc/valkey }
+    - { path: /usr/local/sbin }
+    - { path: /var/lib/valkey, owner: "valkey", group: "valkey", mode: "0750" }
+    - {
+        path: /mnt/nas/apps/valkey,
+        owner: "{{ ansible_user }}",
+        group: "{{ ansible_user }}",
+        mode: "0750",
+      }
+
+- name: Install valkey.conf
+  template:
+    src: valkey.conf.j2
+    dest: /etc/valkey/valkey.conf
+    owner: valkey
+    group: valkey
+    mode: "0644"
+
+- name: Install valkey systemd unit
+  copy:
+    src: valkey.service
+    dest: /etc/systemd/system/valkey.service
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Install keepalived notify script (starts/stops valkey on VIP state change)
+  copy:
+    src: valkey-notify.sh
+    dest: /usr/local/sbin/valkey-notify.sh
+    owner: root
+    group: root
+    mode: "0755"
+
+- name: Ensure valkey is stopped and disabled on boot (started by keepalived notify when MASTER)
+  service:
+    name: valkey
+    state: stopped
+    enabled: false
+    daemon_reload: true

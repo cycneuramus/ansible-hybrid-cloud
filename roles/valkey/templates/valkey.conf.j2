@@ -1,0 +1,8 @@
+port 16379
+bind "{{ keepalived_vip }}" 127.0.0.1
+dir /mnt/nas/apps/valkey
+
+appendonly yes
+appendfsync everysec
+save 1800 1 600 10
+maxmemory-policy noeviction
