@@ -6,7 +6,7 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
-- name: Deploy nas mount service
+- name: Deploy nas mount unit
   template:
     src: nas.mount.j2
     dest: "/etc/systemd/system/mnt-nas.mount"
@@ -14,8 +14,25 @@
     group: root
     mode: "0644"
 
-- name: Enable nas mount service
+- name: Deploy nas automount unit
+  template:
+    src: nas.automount.j2
+    dest: "/etc/systemd/system/mnt-nas.automount"
+    owner: root
+    group: root
+    mode: "0644"
+
+- name: Reload systemd units
   systemd:
-    name: "mnt-nas.mount"
-    enabled: true
     daemon_reload: true
+
+- name: Enable and start nas automount
+  systemd:
+    name: mnt-nas.automount
+    enabled: true
+    state: started
+
+- name: Ensure legacy .mount unit is disabled
+  systemd:
+    name: mnt-nas.mount
+    enabled: false
