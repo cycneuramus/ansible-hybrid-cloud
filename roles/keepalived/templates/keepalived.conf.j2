@@ -4,7 +4,7 @@ vrrp_instance VI_1 {
     virtual_router_id 51
     priority {{ keepalived_priority }}
     advert_int 5
-    notify /usr/local/sbin/valkey-notify.sh
+    # notify /usr/local/sbin/valkey-notify.sh
     authentication {
         auth_type PASS
         auth_pass {{ vault_keepalived_pass }}

@@ -6,18 +6,10 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
-- name: Deploy JuiceFS mount unit
+- name: Deploy JuiceFS mount services
   template:
     src: "juicefs.mount.j2"
     dest: "/etc/systemd/system/mnt-jfs.mount"
-    owner: root
-    group: root
-    mode: "0644"
-
-- name: Deploy JuiceFS automount unit
-  template:
-    src: "juicefs.automount.j2"
-    dest: "/etc/systemd/system/mnt-jfs.automount"
     owner: root
     group: root
     mode: "0644"
@@ -28,6 +20,12 @@
     dest: /sbin/mount.juicefs
     state: link
 
+- name: Enable JuiceFS mount services
+  systemd:
+    name: "mnt-jfs.mount"
+    enabled: true
+    daemon_reload: true
+
 - name: Configure logrotate for JuiceFS
   copy:
     src: "juicefs.log"
@@ -35,15 +33,3 @@
     owner: root
     group: root
     mode: "0644"
-
-- name: Enable and start jfs automount
-  systemd:
-    name: mnt-jfs.automount
-    enabled: true
-    state: started
-    daemon_reload: true
-
-- name: Ensure legacy .mount unit is disabled
-  systemd:
-    name: mnt-jfs.mount
-    enabled: false

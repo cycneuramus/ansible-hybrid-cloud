@@ -1,5 +1,5 @@
 port 16379
-bind "{{ keepalived_vip }}" 127.0.0.1
+bind {{ keepalived_vip }} 127.0.0.1
 dir /mnt/nas/apps/valkey
 
 appendonly yes
