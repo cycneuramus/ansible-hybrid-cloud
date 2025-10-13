@@ -1,0 +1,10 @@
+[Unit]
+Description=Automount NAS NFS
+After=network-online.target
+
+[Automount]
+Where={{ jfs_mount_path }}
+
+[Install]
+WantedBy=multi-user.target
+
