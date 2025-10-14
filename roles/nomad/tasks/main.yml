@@ -113,7 +113,7 @@
       become_user: "{{ ansible_user }}"
       get_url:
         url: "https://github.com/cycneuramus/nmgr/releases/download/v{{ latest_tag }}/nmgr-{{ latest_tag }}-linux-{{ arch }}"
-        dest: "{{ nmgr_bin_dir }}"
+        dest: "{{ nmgr_bin_dir }}/nmgr"
         mode: "0775"
       when: not nmgr_binary.stat.exists or (nmgr_version.stdout is version(latest_tag, '<'))
 
