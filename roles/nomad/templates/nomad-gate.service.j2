@@ -1,0 +1,16 @@
+[Unit]
+Description=Nomad cold-boot gate
+Wants=nomad.service network-online.target
+After=nomad.service network-online.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=/home/{{ ansible_user }}
+Environment=PATH=/home/{{ ansible_user }}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
+ExecStart=/home/{{ ansible_user }}/.local/bin/nomad-gate.sh
+TimeoutStartSec=15min
+RemainAfterExit=yes
+
+[Install]
+WantedBy=multi-user.target
+

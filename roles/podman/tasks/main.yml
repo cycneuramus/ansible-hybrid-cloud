@@ -38,7 +38,7 @@
       - slirp4netns
 
 - name: Create podman directories
-  ansible.builtin.file:
+  file:
     path: "{{ item }}"
     state: directory
     owner: "{{ ansible_user }}"

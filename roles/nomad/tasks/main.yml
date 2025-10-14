@@ -69,3 +69,71 @@
     name: nomad
     enabled: true
     state: started
+
+- name: Install nmgr
+  when: inventory_hostname == leader_node
+  block:
+    - name: Set facts
+      set_fact:
+        nmgr_bin_dir: /home/{{ ansible_user }}/.local/bin
+
+    - name: Get latest release data from GitHub API
+      uri:
+        url: https://api.github.com/repos/cycneuramus/nmgr/releases/latest
+        return_content: true
+      register: release_data
+
+    - name: Set latest tag fact
+      set_fact:
+        latest_tag: "{{ release_data.json.tag_name | regex_replace('^v', '') }}"
+
+    - name: Check if nmgr binary exists
+      stat:
+        path: "{{ nmgr_bin_dir }}/nmgr"
+      register: nmgr_binary
+
+    - name: Get nmgr version string
+      command: nmgr --version
+      register: nmgr_version
+      changed_when: false
+      become: true
+      become_user: "{{ ansible_user }}"
+      environment:
+        PATH: "{{ nmgr_bin_dir }}:{{ ansible_env.PATH }}"
+      when: nmgr_binary.stat.exists
+
+    - name: Debug version
+      debug:
+        msg: "installed: {{ nmgr_version.stdout }}, latest = {{ latest_tag }}"
+      when: nmgr_binary.stat.exists and nmgr_version.rc == 0
+
+    - name: Fetch and unarchive nmgr binary
+      become: true
+      become_user: "{{ ansible_user }}"
+      get_url:
+        url: "https://github.com/cycneuramus/nmgr/releases/download/v{{ latest_tag }}/nmgr-{{ latest_tag }}-linux-{{ arch }}"
+        dest: "{{ nmgr_bin_dir }}"
+        mode: "0775"
+      when: not nmgr_binary.stat.exists or (nmgr_version.stdout is version(latest_tag, '<'))
+
+- name: Create nomad-gate service
+  when: inventory_hostname == leader_node
+  block:
+    - name: Deploy nomad-gate.sh
+      copy:
+        src: nomad-gate.sh
+        dest: "/home/{{ ansible_user }}/.local/bin/nomad-gate.sh"
+        owner: "{{ ansible_user }}"
+        group: "{{ ansible_user }}"
+        mode: "0755"
+
+    - name: Create nomad-gate service
+      template:
+        src: nomad-gate.service.j2
+        dest: /etc/systemd/system/nomad-gate.service
+        mode: "644"
+
+    - name: Enable nomad-gate service
+      systemd:
+        name: nomad-gate
+        enabled: true
