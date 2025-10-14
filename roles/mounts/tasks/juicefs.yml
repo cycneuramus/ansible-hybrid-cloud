@@ -6,23 +6,22 @@
     owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
 
-- name: Deploy JuiceFS mount services
+- name: Deploy JuiceFS mount service
   template:
-    src: "juicefs.mount.j2"
-    dest: "/etc/systemd/system/mnt-jfs.mount"
+    src: "juicefs.service.j2"
+    dest: "/etc/systemd/system/juicefs.service"
     owner: root
     group: root
     mode: "0644"
 
-- name: Link JuiceFS to /sbin/mount.juicefs
-  file:
-    src: /usr/local/bin/juicefs
-    dest: /sbin/mount.juicefs
-    state: link
+- name: Install valkey for readiness checks
+  apt:
+    name: valkey
+    state: present
 
-- name: Enable JuiceFS mount services
+- name: Enable JuiceFS mount service
   systemd:
-    name: "mnt-jfs.mount"
+    name: "juicefs.service"
     enabled: true
     daemon_reload: true
 

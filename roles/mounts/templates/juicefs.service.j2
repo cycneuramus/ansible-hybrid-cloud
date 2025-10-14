@@ -1,0 +1,26 @@
+[Unit]
+Description=Mount JuiceFS filesystem for distributed storage
+After=network-online.target
+Wants=network-online.target
+AssertPathIsDirectory={{ jfs_mount_path }}
+
+[Service]
+Type=exec
+TimeoutStartSec=30m
+TimeoutStopSec=60s
+Restart=on-failure
+RestartSec=5
+ExecStartPre=/usr/bin/bash -c 'for i in {1..300}; do valkey-cli -h {{ wireguard_ip }} -p 16379 ping &> /dev/null && exit 0; sleep 5; done; echo "valkey not ready" >&2; exit 1'
+ExecStart=/usr/local/bin/juicefs mount \
+	redis://{{ wireguard_ip }}:16379 \
+	--cache-size 512000 \
+	--writeback \
+	--no-usage-report \
+    --readdir-cache \
+    --check-storage \
+	-o allow_other,user_id=1000,group_id=1000 \
+	{{ jfs_mount_path }}
+ExecStop=/usr/local/bin/juicefs umount {{ jfs_mount_path }}
+
+[Install]
+WantedBy=default.target
