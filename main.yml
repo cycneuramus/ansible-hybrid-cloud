@@ -140,6 +140,8 @@
       become: true
       when:
         - cluster_labels["datacenter"] == "eso"
+        - valkey_mode == "bare-metal"
+        - storage == "juicefs"
       tags:
         - valkey
         - cluster

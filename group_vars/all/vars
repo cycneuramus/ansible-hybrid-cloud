@@ -5,6 +5,7 @@ rclone_mode: mount
 storage: juicefs
 editor: neovim
 vagrant: false
+valkey_mode: container
 
 ansible_port: 4422
 ansible_user: "{{ vault_user }}"
