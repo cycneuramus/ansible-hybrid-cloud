@@ -24,11 +24,9 @@ client {
 		interface = "wg-mesh"
 	}
 
-	{% raw %}
 	host_network "public" {
-		interface = "{{ GetDefaultInterfaces | limit 1 | attr \"name\" }}"
+		interface = "{{ ansible_default_ipv4.interface }}"
 	}
-	{% endraw %}
 
 	template {
 		disable_file_sandbox = true
