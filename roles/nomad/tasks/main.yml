@@ -69,6 +69,7 @@
     name: nomad
     enabled: true
     state: started
+    daemon_reload: true
 
 - name: Install nmgr
   when: inventory_hostname == leader_node

@@ -3,6 +3,8 @@ Description=Nomad
 Documentation=https://www.nomadproject.io/docs/
 Wants=network-online.target
 After=network-online.target
+Requires=sys-subsystem-net-devices-{{ ansible_default_ipv4.interface }}.device
+After=sys-subsystem-net-devices-{{ ansible_default_ipv4.interface }}.device
 
 [Service]
 
@@ -10,6 +12,11 @@ After=network-online.target
 # should be run as root
 
 ExecReload=/bin/kill -HUP $MAINPID
+ExecStartPre=/bin/sh -c 'for i in $(seq 1 60); do \
+  ip -o addr show dev {{ ansible_default_ipv4.interface }} scope global up | grep -q . && \
+  ip route show default dev {{ ansible_default_ipv4.interface }} | grep -q . && \
+  ip -o addr show dev wg-mesh scope global up | grep -q . && exit 0; \
+  sleep 2; done; echo "net not ready"; exit 1'
 ExecStart=/usr/bin/nomad agent -config "{{ nomad_data_dir }}"
 KillMode=process
 KillSignal=SIGINT
