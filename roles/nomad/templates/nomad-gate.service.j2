@@ -5,6 +5,8 @@ After=nomad.service network-online.target
 
 [Service]
 Type=oneshot
+User={{ ansible_user }}
+Group={{ ansible_user }}
 WorkingDirectory=/home/{{ ansible_user }}
 Environment=PATH=/home/{{ ansible_user }}/.local/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin
 ExecStart=/home/{{ ansible_user }}/.local/bin/nomad-gate.sh
