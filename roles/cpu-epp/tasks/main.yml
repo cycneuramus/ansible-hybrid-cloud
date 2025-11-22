@@ -1,0 +1,13 @@
+- name: Install tmpfiles.d config for CPU EPP
+  ansible.builtin.copy:
+    dest: /etc/tmpfiles.d/energy_performance_preference.conf
+    owner: root
+    group: root
+    mode: "0644"
+    content: |
+      w /sys/devices/system/cpu/cpufreq/policy*/energy_performance_preference - - - - balance_power
+
+- name: Apply EPP tmpfiles rules immediately
+  ansible.builtin.command:
+    cmd: systemd-tmpfiles --create /etc/tmpfiles.d/energy_performance_preference.conf
+  changed_when: false

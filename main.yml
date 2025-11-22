@@ -12,6 +12,10 @@
       when: ansible_user != new_user
       tags: user
 
+    - role: cpu-epp
+      become: true
+      tags: cpu-epp
+
     - role: debloat
       become: true
       tags: debloat
