@@ -15,7 +15,7 @@
             seconds: 30
 
         - name: Bring down infra
-          command: nmgr down infra
+          command: nmgr -d down infra
           changed_when: true
 
         - name: Grace period for final writes
