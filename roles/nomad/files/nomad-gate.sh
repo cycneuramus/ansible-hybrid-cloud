@@ -22,6 +22,11 @@ until curl -sf "$nomad_addr/v1/status/leader" | grep -q :; do
 	sleep 5
 done
 
+until ! nomad var get -item=in_progress system/upgrade &> /dev/null; do
+	log "waiting for cluster upgrade to finish…"
+	sleep 10
+done
+
 nmgr down services -d || {
 	log "nmgr down services failed"
 	exit 1

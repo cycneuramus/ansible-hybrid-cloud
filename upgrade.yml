@@ -3,6 +3,11 @@
   environment:
     PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
   tasks:
+    - name: Set Nomad upgrade flag
+      when: inventory_hostname == leader_node
+      command: nomad var put system/upgrade in_progress=true
+      changed_when: true
+
     - name: Bring down Nomad jobs
       when: inventory_hostname == leader_node
       block:
@@ -53,3 +58,11 @@
     - name: Wait for the server to come back online
       wait_for_connection:
         timeout: "{{ reboot_timeout }}"
+
+- name: Clear Nomad upgrade flag
+  hosts: cluster_managers
+  tasks:
+    - name: Clear upgrade flag in Nomad
+      when: inventory_hostname == leader_node
+      command: nomad var purge system/upgrade
+      changed_when: true
