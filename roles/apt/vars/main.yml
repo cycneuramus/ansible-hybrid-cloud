@@ -17,5 +17,6 @@ pkgs:
   - ufw
   - unattended-upgrades
   - va-driver-all
+  - valkey-tools
   - vim
   - wireguard
