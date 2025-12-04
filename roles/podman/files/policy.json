@@ -1,51 +1,56 @@
 {
-	"default": [
-		{
-			"type": "reject"
-		}
-	],
-	"transports": {
-		"docker": {
-			"docker.io": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"ghcr.io": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"lscr.io": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"quay.io": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"codeberg.org": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"gcr.io": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"registry.gitlab.com": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			],
-			"dock.mau.dev": [
-				{
-					"type": "insecureAcceptAnything"
-				}
-			]
-		}
-	}
+  "default": [
+    {
+      "type": "reject"
+    }
+  ],
+  "transports": {
+    "docker": {
+      "docker.io": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "ghcr.io": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "lscr.io": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "quay.io": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "codeberg.org": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "gcr.io": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "registry.gitlab.com": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "dock.mau.dev": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ],
+      "git.ptr.moe": [
+        {
+          "type": "insecureAcceptAnything"
+        }
+      ]
+    }
+  }
 }
