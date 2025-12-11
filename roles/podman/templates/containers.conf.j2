@@ -1,0 +1,41 @@
+[containers]
+default_capabilities = [
+    "AUDIT_WRITE",
+    "CHOWN",
+    "DAC_OVERRIDE",
+    "FOWNER",
+    "FSETID",
+    "KILL",
+    "MKNOD",
+    "NET_BIND_SERVICE",
+    "NET_RAW",
+    "SETFCAP",
+    "SETGID",
+    "SETPCAP",
+    "SETUID",
+    "SYS_CHROOT",
+]
+
+env = [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "TERM=xterm",
+]
+
+host_containers_internal_ip = "169.254.1.2"
+base_hosts_file = "{{ ansible_env.HOME }}/.config/containers/hosts"
+
+init_path = "/usr/bin/catatonit"
+
+[network]
+default_rootless_network_cmd = "pasta"
+
+[engine]
+conmon_env_vars = [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "TERM=xterm",
+]
+
+env = [
+    "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
+    "TERM=xterm",
+]

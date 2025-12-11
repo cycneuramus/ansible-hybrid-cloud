@@ -33,9 +33,9 @@
       - aardvark-dns
       - crun
       - netavark
+      - passt
       - podman
       - rootlesskit
-      - slirp4netns
 
 - name: Create podman directories
   file:
@@ -73,9 +73,24 @@
         owner: "{{ ansible_user }}",
         group: "{{ ansible_user }}",
       }
+
+- name: Install container configuration templates
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner }}"
+    group: "{{ item.group }}"
+    mode: "0644"
+  with_items:
     - {
-        src: "containers.conf",
+        src: "containers.conf.j2",
         dest: "{{ ansible_env.HOME }}/.config/containers/containers.conf",
+        owner: "{{ ansible_user }}",
+        group: "{{ ansible_user }}",
+      }
+    - {
+        src: "hosts.j2",
+        dest: "{{ ansible_env.HOME }}/.config/containers/hosts",
         owner: "{{ ansible_user }}",
         group: "{{ ansible_user }}",
       }

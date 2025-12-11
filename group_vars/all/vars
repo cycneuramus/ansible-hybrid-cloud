@@ -19,6 +19,8 @@ leader_node: "apex"
 nas_node: "horreum"
 wireguard_endpoint_home: "{{ vault_wireguard_endpoint_home }}"
 wireguard_port: 51820
+domain: "{{ vault_domain }}"
+subdomains: "{{ vault_subdomains }}"
 
 keepalived_vip: 192.168.1.200
 nas_mount_path: "/mnt/nas"
