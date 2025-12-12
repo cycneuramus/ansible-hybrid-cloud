@@ -36,6 +36,7 @@
       - passt
       - podman
       - rootlesskit
+      - unbound
 
 - name: Create podman directories
   file:
@@ -89,10 +90,10 @@
         group: "{{ ansible_user }}",
       }
     - {
-        src: "hosts.j2",
-        dest: "{{ ansible_env.HOME }}/.config/containers/hosts",
-        owner: "{{ ansible_user }}",
-        group: "{{ ansible_user }}",
+        src: "unbound-pasta.conf.j2",
+        dest: "/etc/unbound/unbound.conf.d/pasta.conf",
+        owner: "root",
+        group: "root",
       }
 
 - name: Allow rootless binding to privileged ports
@@ -201,6 +202,23 @@
 - name: Enable systemd user lingering
   command: "loginctl enable-linger {{ ansible_user }}"
   changed_when: false
+
+- name: Enable and start unbound
+  service:
+    name: unbound
+    enabled: true
+    state: started
+
+- name: Ensure unbound answers wildcard zone as expected
+  command: "dig @{{ unbound_listen_ip }} test.{{ domain }} A +short"
+  register: dig_out
+  changed_when: false
+
+- name: Assert wildcard override returns container internal host ip
+  assert:
+    that:
+      - dig_out.stdout_lines | select('match', '^' ~ container_host_ip ~ '$') | list | length > 0
+    fail_msg: "unbound did not return {{ container_host_ip }} for test.{{ domain }} (unbound may need to be restarted)"
 
 - name: Enable and start Podman user socket
   become: true

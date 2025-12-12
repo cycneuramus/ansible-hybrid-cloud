@@ -21,13 +21,13 @@ env = [
     "TERM=xterm",
 ]
 
-host_containers_internal_ip = "169.254.1.2"
-base_hosts_file = "{{ ansible_env.HOME }}/.config/containers/hosts"
-
 init_path = "/usr/bin/catatonit"
+
+host_containers_internal_ip = "{{ container_host_ip }}"
 
 [network]
 default_rootless_network_cmd = "pasta"
+pasta_options=["--dns-host", "{{ unbound_listen_ip }}"]
 
 [engine]
 conmon_env_vars = [

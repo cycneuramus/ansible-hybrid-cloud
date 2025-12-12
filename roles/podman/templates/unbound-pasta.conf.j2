@@ -1,0 +1,14 @@
+server:
+  interface: {{ unbound_listen_ip }}
+  access-control: 127.0.0.0/8 allow
+  do-ip4: yes
+  do-ip6: no
+  hide-identity: yes
+  hide-version: yes
+
+local-zone: "{{ domain }}." redirect
+local-data: "{{ domain }}. 60 IN A {{ container_host_ip }}"
+
+forward-zone:
+  name: "."
+  forward-addr: {{ dns_server }}
