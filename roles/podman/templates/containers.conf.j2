@@ -39,3 +39,7 @@ env = [
     "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin",
     "TERM=xterm",
 ]
+
+events_logger = "file"
+events_logfile_path = "{{ ansible_env.HOME }}/log/podman-events.log"
+events_logfile_max_size = "1m"
