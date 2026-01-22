@@ -40,6 +40,4 @@ env = [
     "TERM=xterm",
 ]
 
-events_logger = "file"
-events_logfile_path = "{{ ansible_env.HOME }}/log/podman-events.log"
-events_logfile_max_size = "1m"
+events_logger = "journald"
