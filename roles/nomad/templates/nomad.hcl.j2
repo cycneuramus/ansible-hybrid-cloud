@@ -91,6 +91,10 @@ telemetry {
   collection_interval        = "30s"
 }
 
+limits {
+  http_max_conns_per_client = 500
+}
+
 plugin "nomad-driver-podman" {
 	config {
 		socket {
