@@ -50,7 +50,7 @@
   shell: |
     set -o pipefail
     [ -d "{{ temp_repo }}" ] && cd "{{ temp_repo }}"
-    yes | "$HOME"/transcrypt/transcrypt -c aes-256-cbc -p "{{ transcrypt_pass }}"
+    "$HOME"/transcrypt/transcrypt -y -c aes-256-cbc -p "{{ transcrypt_pass }}"
   register: result
   failed_when: "'successfully configured' not in result.stdout"
   changed_when: true
