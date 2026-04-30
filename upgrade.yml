@@ -1,7 +1,7 @@
 - name: Bring down Nomad jobs
   hosts: cluster_managers
   environment:
-    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}:.local/bin:{{ ansible_env.PATH }}"
+    PATH: "{{ ansible_env.HOME }}/bin:{{ ansible_env.HOME }}/.local/bin:{{ ansible_env.PATH }}"
   tasks:
     - name: Set Nomad upgrade flag
       when: inventory_hostname == leader_node
