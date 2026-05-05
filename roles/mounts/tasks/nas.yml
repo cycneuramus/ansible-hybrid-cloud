@@ -26,11 +26,10 @@
   systemd:
     daemon_reload: true
 
-- name: Enable and start nas automount
+- name: Enable nas automount
   systemd:
     name: mnt-nas.automount
     enabled: true
-    state: started
 
 - name: Ensure legacy .mount unit is disabled
   systemd:

@@ -9,7 +9,4 @@ What={{ hostvars[nas_node].ansible_host }}:{{ nas_mount_path }}
 Where={{ nas_mount_path }}
 Type=nfs
 Options=vers=4.2,noatime
-TimeoutSec=10
-
-[Install]
-WantedBy=default.target
+TimeoutSec=30
