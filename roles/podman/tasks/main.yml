@@ -232,7 +232,7 @@
     XDG_RUNTIME_DIR: "/run/user/{{ new_user_uid }}"
 
 - name: Enable and start Podman root socket
-  when: not podman_dri_acl_enabled
+  # when: not podman_dri_acl_enabled
   systemd:
     name: podman.socket
     enabled: true
