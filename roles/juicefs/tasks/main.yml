@@ -1,21 +1,21 @@
 - name: Set facts
   set_fact:
-    jfs_pkg: /tmp/juicefs-ce.tar.gz
-    jfs_bin_dir: /usr/local/bin
+    juicefs_pkg: /tmp/juicefs-ce.tar.gz
+    juicefs_bin_dir: /usr/local/bin
 
 - name: Get latest release data from GitHub API
   uri:
     url: https://api.github.com/repos/juicedata/juicefs/releases/latest
     return_content: true
-  register: release_data
+  register: juicefs_release_data
 
 - name: Set latest tag fact
   set_fact:
-    latest_tag: "{{ release_data.json.tag_name | regex_replace('^v', '') }}"
+    juicefs_latest_tag: "{{ juicefs_release_data.json.tag_name | regex_replace('^v', '') }}"
 
 - name: Check if juicefs binary exists
   stat:
-    path: "{{ jfs_bin_dir }}/juicefs"
+    path: "{{ juicefs_bin_dir }}/juicefs"
   register: juicefs_binary
 
 - name: Get JuiceFS version string
@@ -34,15 +34,15 @@
 
 - name: Debug version
   debug:
-    msg: "installed: {{ juicefs_semver }}, latest = {{ latest_tag }}"
+    msg: "installed: {{ juicefs_semver }}, latest = {{ juicefs_latest_tag }}"
   when: juicefs_binary.stat.exists and juicefs_version_cmd.rc == 0
 
 - name: Fetch and unarchive JuiceFS binary
   become: true
   unarchive:
-    src: "https://github.com/juicedata/juicefs/releases/download/v{{ latest_tag }}/juicefs-{{ latest_tag }}-linux-{{ arch }}.tar.gz"
-    dest: "{{ jfs_bin_dir }}"
+    src: "https://github.com/juicedata/juicefs/releases/download/v{{ juicefs_latest_tag }}/juicefs-{{ juicefs_latest_tag }}-linux-{{ arch }}.tar.gz"
+    dest: "{{ juicefs_bin_dir }}"
     remote_src: true
     include:
       - juicefs
-  when: not juicefs_binary.stat.exists or (juicefs_semver is version(latest_tag, '<'))
+  when: not juicefs_binary.stat.exists or (juicefs_semver is version(juicefs_latest_tag, '<'))
